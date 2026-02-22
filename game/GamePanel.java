@@ -1,0 +1,196 @@
+package game;
+
+import input.KeyHandler;
+import entity.Player;
+import world.CollisionChecker;
+import world.TileManager;
+import entity.GreenSlime;
+
+
+import javax.swing.JPanel;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+
+
+public class GamePanel extends JPanel implements Runnable {
+    
+    // --- ตั้งค่าหน้าจอ (Screen Settings) ---
+    public final int tileSize = GameConfig.ORIGINAL_TILE_SIZE * GameConfig.SCALE;
+    public final int maxScreenCol = GameConfig.MAX_SCREEN_COL;
+    public final int maxScreenRow = GameConfig.MAX_SCREEN_ROW;
+    
+    public final int screenWidth = tileSize * maxScreenCol; // 768 พิกเซล
+    public final int screenHeight = tileSize * maxScreenRow; // 576 พิกเซล
+
+    // --- ตั้งค่าแผนที่โลก (World Settings) ---
+    // สร้างโลกให้กว้างใหญ่ 50x50 บล็อก
+    public final int maxWorldCol = 50; 
+    public final int maxWorldRow = 50;
+
+    // int playerX = 100;
+    // int playerY = 100;
+    // int playerSpeed = 4;
+
+    // Objects พื้นฐานของเกม
+    KeyHandler keyH = new KeyHandler(); // สร้างตัวรับปุ่มกด
+    Thread gameThread;  // สร้างตตัวจัดการลูปเกม
+
+    // สร้างตัวเช็คการชน โดยส่ง GamePanel (this)
+    public CollisionChecker cChecker = new CollisionChecker(this); 
+
+    // สร้าง Object ตัวละคร โดยส่ง GamePanel (this) และ KeyHandler
+    public Player player = new Player(this, keyH);
+    public GreenSlime[] greenSlime = new GreenSlime[10];    // สร้างอาร์เรย์สำหรับเก็บสไลม์ได้สูงสุด 10 ตัว
+
+    // Objects ฉาก
+    public TileManager tileM = new TileManager(this); // สร้างตัวจัดการแผนที่ โดยส่ง GamePanel (this) ให้
+
+
+    public GamePanel() {
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+
+        this.setBackground(Color.GRAY);
+
+        this.addKeyListener(keyH); // เพิ่ม KeyHandler เป็นตัวรับปุ่มกด
+        this.setFocusable(true); // บังคับรับให้ JPanel สามารถรับปุ่มกดได้
+
+        // กำหนดตำแหน่งเริ่มต้นของสไลม์
+        // greenSlime.worldX = tileSize * 5; // เกิดที่คอลัมน์ 5
+        // greenSlime.worldY = tileSize * 5; // เกิดที่แถว 5
+        setupMonsters(); // เรียกเมธอดสำหรับสร้างสไลม์ทั้ง 10 ตัว
+
+    }
+
+    // ลูปเกมหลัก
+    public void startGameThread() {
+        gameThread = new Thread(this);
+        gameThread.start();
+    }
+
+    // Game Loop
+    public void run() {
+        // เรากำหนด FPS = 60 ใน GameConfig
+        double drawInterval = 1000000000.0 / GameConfig.FPS;
+        
+        // AI Help me
+        double delta = 0;
+        long lastTime = System.nanoTime();
+
+        while (gameThread != null) {
+            long currentTime = System.nanoTime();
+            delta += (currentTime - lastTime) / drawInterval;
+            lastTime = currentTime;
+
+            if (delta >= 1) {
+                update(); // อัพเดตตำแหน่งและสถานะต่างๆ
+                repaint(); // เรียก paintComponent เพื่อวาดใหม่
+                delta--;
+            }
+        }
+    }
+
+    // เมธอดสำหรับเริ่มเกม เรียกสร้างสไลม์ทั้ง 10 ตัว
+    public void setupMonsters() {
+        for (int i = 0; i < greenSlime.length; i++) {
+            spawnSlime(i);
+        }
+    }
+
+    // เมธอดสุ่มพิกัดเกิดให้สไลม์ทีละตัว
+    public void spawnSlime(int index) {
+        greenSlime[index] = new GreenSlime(this); // สร้างสไลม์ตัวใหม่
+        boolean validPosition = false;
+        java.util.Random random = new java.util.Random();
+
+        while (!validPosition) {
+            // สุ่มคอลัมน์และแถวในขอบเขตแผนที่โลก (50x50)
+            int randomCol = random.nextInt(maxWorldCol);
+            int randomRow = random.nextInt(maxWorldRow);
+            
+            // ดึงข้อมูลว่าช่องที่สุ่มได้ คือบล็อกหมายเลขอะไร
+            int tileNum = tileM.mapTileNum[randomCol][randomRow];
+
+            // เช็คว่าบล็อกนั้น "ไม่มีการชน (collision == false)" เช่น เป็นพื้นหญ้า
+            if (tileM.tile[tileNum].collision == false) {
+                // ถ้าเป็นที่ว่าง ก็จับสไลม์ไปวางตรงนั้นเลย
+                greenSlime[index].worldX = randomCol * tileSize;
+                greenSlime[index].worldY = randomRow * tileSize;
+                validPosition = true; // ออกจากลูปสุ่ม
+            }
+        }
+    }
+
+    // เมธอดสำหรับคำนวณตำแหน่งใหม่
+    public void update() {
+        // อัพเดตตำแหน่งของผู้เล่นตามปุ่มที่ถูกกด
+        // เช็คว่ากดปุ่มไหนอยู่ ก็ให้ขยับพิกัด X, Y ไปทางนั้น
+        // if (keyH.upPressed) { playerY -= playerSpeed; }
+        // if (keyH.downPressed) { playerY += playerSpeed; }
+        // if (keyH.leftPressed) { playerX -= playerSpeed; }
+        // if (keyH.rightPressed) { playerX += playerSpeed; }
+
+        player.update(); // เรียกเมธอด update ของ Player เพื่ออัพเดตตำแหน่งของมัน
+        // ถ้าสไลม์ยังมีชีวิตอยู่ ถึงจะยอมให้มันเดิน
+        // วนลูปเช็คสไลม์ทั้ง 10 ตัว
+        for (int i = 0; i < greenSlime.length; i++) {
+            if (greenSlime[i] != null) {
+                if (greenSlime[i].alive == true) {
+                    greenSlime[i].update(); // ถ้ายังมีชีวิต ให้เดินต่อ
+                } else {
+                    // *** ถ้าตัวไหนตาย ให้สุ่มเกิดใหม่ทันที! ***
+                    spawnSlime(i);
+                }
+            }
+        }  
+    }
+
+    
+    // เมธอดสำหรับวาด UI (เช่น เลือด, EXP, Lv.)
+    public void drawUI(Graphics g) {
+        // วาดตัวอักษรบอกสถานะมุมซ้ายบน
+        g.setFont(new Font("Arial", Font.BOLD, 24)); // ตั้งค่าฟอนต์ (ชื่อฟอนต์, สไตล์, ขนาด)
+        g.setColor(Color.BLACK);
+        g.drawString("Lv. " + player.level, 20, 40);
+        g.drawString("HP: " + player.life + "/" + player.maxLife, 20, 70);
+        g.drawString("EXP: " + player.exp + "/" + player.nextLevelExp, 20, 100);
+
+        // เช็คว่าถ้าผู้เล่นเลือดหมด ให้ขึ้นหน้าจอ Game Over
+        if (player.life <= 0) {
+            g.setFont(new Font("Arial", Font.BOLD, 80));
+            g.setColor(Color.RED);
+            // คาดคะเนตำแหน่งกึ่งกลางจอ
+            g.drawString("GAME OVER", screenWidth / 2 - 250, screenHeight / 2);
+            gameThread = null; // สั่งหยุดลูปเกมทันที (เกมค้าง)
+        }
+    }
+
+
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
+        // g.setColor(Color.YELLOW);
+        // g.fillRect(playerX, playerY, 50, 50);   // ตัวอย่างการวาดสี่เหลี่ยมสีเหลือง
+
+        tileM.draw(g); // เรียกเมธอด draw ของ TileManager เพื่อวาดแผนที่
+        player.draw(g); // เรียกเมธอด draw ของ Player เพื่อวาดตัวละคร
+        // ถ้าสไลม์ยังมีชีวิตอยู่ ถึงจะยอมวาดรูปมันลงจอ
+        // if (greenSlime.alive == true) {
+        //     greenSlime.draw(g); 
+        // }
+        // วนลูปวาดสไลม์ทั้ง 10 ตัว
+        for (int i = 0; i < greenSlime.length; i++) {
+            if (greenSlime[i] != null && greenSlime[i].alive == true) {
+                greenSlime[i].draw(g); 
+            }
+        }
+
+        drawUI(g); // วาด UI (เลือด, EXP, Lv.)
+        g.dispose(); // ปล่อยทรัพยากรกราฟิกที่ไม่ใช้แล้ว (คืนความจำ)
+    }
+}
+
+
