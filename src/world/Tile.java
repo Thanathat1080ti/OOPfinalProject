@@ -1,4 +1,4 @@
-package res.src.world;
+package world;
 
 import java.awt.Image;
 

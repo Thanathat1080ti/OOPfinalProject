@@ -1,4 +1,4 @@
-package res.src.world;
+package world;
 
 import entity.Entity;
 import game.GamePanel;
