@@ -103,9 +103,44 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    // // เมธอดสุ่มพิกัดเกิดให้สไลม์ทีละตัว
+    // public void spawnSlime(int index) {
+    //     greenSlime[index] = new GreenSlime(this); // สร้างสไลม์ตัวใหม่
+    //     boolean validPosition = false;
+    //     java.util.Random random = new java.util.Random();
+
+    //     while (!validPosition) {
+    //         // สุ่มคอลัมน์และแถวในขอบเขตแผนที่โลก (50x50)
+    //         int randomCol = random.nextInt(maxWorldCol);
+    //         int randomRow = random.nextInt(maxWorldRow);
+            
+    //         // ดึงข้อมูลว่าช่องที่สุ่มได้ คือบล็อกหมายเลขอะไร
+    //         int tileNum = tileM.mapTileNum[randomCol][randomRow];
+
+    //         // เช็คว่าบล็อกนั้น "ไม่มีการชน (collision == false)" เช่น เป็นพื้นหญ้า
+    //         if (tileM.tile[tileNum].collision == false) {
+    //             // ถ้าเป็นที่ว่าง ก็จับสไลม์ไปวางตรงนั้นเลย
+    //             greenSlime[index].worldX = randomCol * tileSize;
+    //             greenSlime[index].worldY = randomRow * tileSize;
+    //             validPosition = true; // ออกจากลูปสุ่ม
+    //         }
+    //     }
+    // }
+
     // เมธอดสุ่มพิกัดเกิดให้สไลม์ทีละตัว
     public void spawnSlime(int index) {
-        greenSlime[index] = new GreenSlime(this); // สร้างสไลม์ตัวใหม่
+        
+        // --- 🌟 จุดที่แก้ไข: ใช้เทคนิค Object Pooling รียูสสไลม์ ---
+        // เช็คว่าถ้ายังไม่มีสไลม์ในช่องนี้ ถึงจะสร้างใหม่ (โหลดรูปแค่ครั้งเดียวตอนเริ่มเกม)
+        if (greenSlime[index] == null) {
+            greenSlime[index] = new GreenSlime(this); 
+        }
+        
+        // ชุบชีวิตและรีเซ็ตค่าสถานะให้พร้อมสู้ใหม่
+        greenSlime[index].alive = true;
+        greenSlime[index].life = 3; 
+        // ----------------------------------------------------
+
         boolean validPosition = false;
         java.util.Random random = new java.util.Random();
 
@@ -119,7 +154,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             // เช็คว่าบล็อกนั้น "ไม่มีการชน (collision == false)" เช่น เป็นพื้นหญ้า
             if (tileM.tile[tileNum].collision == false) {
-                // ถ้าเป็นที่ว่าง ก็จับสไลม์ไปวางตรงนั้นเลย
+                // จับสไลม์ตัวเดิมไปวางตรงพิกัดใหม่
                 greenSlime[index].worldX = randomCol * tileSize;
                 greenSlime[index].worldY = randomRow * tileSize;
                 validPosition = true; // ออกจากลูปสุ่ม
