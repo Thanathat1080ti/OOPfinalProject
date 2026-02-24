@@ -1,17 +1,16 @@
 package game;
 
-import input.KeyHandler;
-import entity.Player;
-import world.CollisionChecker;
-import world.TileManager;
 import entity.GreenSlime;
-
-
-import javax.swing.JPanel;
-import java.awt.Graphics;
+import entity.Player;
+import input.KeyHandler;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import javax.swing.JPanel;
+import world.CollisionChecker;
+import world.TileManager;
 
 
 public class GamePanel extends JPanel implements Runnable {
@@ -168,39 +167,66 @@ public class GamePanel extends JPanel implements Runnable {
             g.setFont(new Font("Arial", Font.BOLD, 80));
             g.setColor(Color.RED);
             // คาดคะเนตำแหน่งกึ่งกลางจอ
-            g.drawString("GAME OVER", screenWidth / 2 - 250, screenHeight / 2);
+            g.drawString("GAME OVER", getWidth() / 2 - 250, getHeight() / 2);
             g.setFont(new Font("Arial", Font.BOLD, 40));
-            g.setColor(Color.BLACK);
-            g.drawString("Press ENTER to Respawn", screenWidth / 2 - 250, screenHeight / 2 + 100);
+            g.setColor(Color.WHITE);
+            g.drawString("Press ENTER to Respawn", getWidth() / 2 - 250, getHeight() / 2 + 100);
         }
+
+
+
     }
 
 
 
-    @Override
+    // @Override
+    // protected void paintComponent(Graphics g) {
+    //     super.paintComponent(g);
+        
+    //     // g.setColor(Color.YELLOW);
+    //     // g.fillRect(playerX, playerY, 50, 50);   // ตัวอย่างการวาดสี่เหลี่ยมสีเหลือง
+
+    //     tileM.draw(g); // เรียกเมธอด draw ของ TileManager เพื่อวาดแผนที่
+    //     player.draw(g); // เรียกเมธอด draw ของ Player เพื่อวาดตัวละคร
+    //     // ถ้าสไลม์ยังมีชีวิตอยู่ ถึงจะยอมวาดรูปมันลงจอ
+    //     // if (greenSlime.alive == true) {
+    //     //     greenSlime.draw(g); 
+    //     // }
+    //     // วนลูปวาดสไลม์ทั้ง 10 ตัว
+    //     for (int i = 0; i < greenSlime.length; i++) {
+    //         if (greenSlime[i] != null && greenSlime[i].alive == true) {
+    //             greenSlime[i].draw(g); 
+    //         }
+    //     }
+
+    //     drawUI(g); // วาด UI (เลือด, EXP, Lv.)
+    //     g.dispose(); // ปล่อยทรัพยากรกราฟิกที่ไม่ใช้แล้ว (คืนความจำ)
+    // }
+
+@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
-        // g.setColor(Color.YELLOW);
-        // g.fillRect(playerX, playerY, 50, 50);   // ตัวอย่างการวาดสี่เหลี่ยมสีเหลือง
+        Graphics2D g2 = (Graphics2D) g.create();
 
-        tileM.draw(g); // เรียกเมธอด draw ของ TileManager เพื่อวาดแผนที่
-        player.draw(g); // เรียกเมธอด draw ของ Player เพื่อวาดตัวละคร
-        // ถ้าสไลม์ยังมีชีวิตอยู่ ถึงจะยอมวาดรูปมันลงจอ
-        // if (greenSlime.alive == true) {
-        //     greenSlime.draw(g); 
-        // }
-        // วนลูปวาดสไลม์ทั้ง 10 ตัว
-        for (int i = 0; i < greenSlime.length; i++) {
-            if (greenSlime[i] != null && greenSlime[i].alive == true) {
-                greenSlime[i].draw(g); 
+        // --- 🌟 สิ่งที่ต้องเพิ่ม: อัปเดตจุดกึ่งกลางกล้อง ณ วินาทีที่วาดภาพ ทันที! ---
+        player.screenX = getWidth() / 2 - (tileSize / 2);
+        player.screenY = getHeight() / 2 - (tileSize / 2);
+        // -----------------------------------------------------------
+
+        // คำสั่งวาดภาพด้านล่างนี้ จะใช้ screenX และ screenY ที่ถูกต้องเสมอครับ!
+        tileM.draw(g2);
+        
+        for (GreenSlime slime : greenSlime) {
+            if (slime != null && slime.alive == true) {
+                slime.draw(g2); 
             }
         }
-
-        drawUI(g); // วาด UI (เลือด, EXP, Lv.)
-        g.dispose(); // ปล่อยทรัพยากรกราฟิกที่ไม่ใช้แล้ว (คืนความจำ)
+        
+        player.draw(g2); 
+        drawUI(g2);
+        
+        g2.dispose();
     }
-
 }
 
 

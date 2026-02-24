@@ -1,17 +1,10 @@
 package world;
 
 import game.GamePanel;
-
 import java.awt.Graphics;
 import java.io.File;
 import java.util.Scanner;
-
 import javax.swing.ImageIcon;
-
-import java.awt.Color;
-
-import java.io.File;
-import java.util.Scanner;
 
 public class TileManager {
     GamePanel gp;
@@ -47,6 +40,13 @@ public class TileManager {
         tile[4] = new Tile(); // เบอร์ 4: leaf (เดินชน)
         tile[4].image = new ImageIcon("res/leaf.png").getImage();
         tile[4].collision = true; // กำหนดให้บล็อกที่ 4 มี collision = true
+
+        tile[5] = new Tile(); // เบอร์ 5: หญ้า2 (เดินผ่านได้)
+        tile[5].image = new ImageIcon("res/grass2.png").getImage();
+        
+        tile[6] = new Tile(); // เบอร์ 6: หญ้า3 (เดินผ่านได้)
+        tile[6].image = new ImageIcon("res/grass3.png").getImage();
+        
 
 
     }

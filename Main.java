@@ -1,5 +1,4 @@
 import game.*;
-
 import javax.swing.JFrame;
 
 public class Main {
@@ -10,7 +9,7 @@ public class Main {
         window.setVisible(true);                            
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // X (exit button)
         
-        window.setResizable(false); // ไม่ให้ปรับขนาดหน้าต่างได้
+        window.setResizable(true); // ไม่ให้ปรับขนาดหน้าต่างได้
         window.setLocationRelativeTo(null); // ให้หน้าต่างแสดงตรงกลางจอ
         
         GamePanel gamePanel = new GamePanel();

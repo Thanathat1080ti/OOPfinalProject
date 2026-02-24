@@ -2,8 +2,6 @@ package entity;
 
 import game.GamePanel;
 import input.KeyHandler;
-
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -16,8 +14,8 @@ public class Player extends Entity {
     int attackCooldown = 0; // เพิ่มตัวแปรหน่วงเวลาฟันดาบ
 
     // เพิ่มตัวแปรพิกัดสำหรับวาดบนหน้าจอ
-    public final int screenX;
-    public final int screenY;
+    public int screenX;
+    public int screenY;
 
     // --- เพิ่มตัวแปรสถานะ ---
     public int maxLife;
@@ -34,8 +32,8 @@ public class Player extends Entity {
         this.keyH = keyH;
 
         // คำนวณหาจุดกึ่งกลางของหน้าจอ (เอาความกว้างจอหาร 2 แล้วลบด้วยครึ่งนึงของตัวละคร)
-        screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
-        screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+        // screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
+        // screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
         
         // hitbox ของผู้เล่น (พื้นที่สำหรับตรวจสอบการชน)
         solidArea = new Rectangle(8, 16, 32, 32);
@@ -44,7 +42,7 @@ public class Player extends Entity {
         getPlayerImage();   // โหลดรูปภาพของผู้เล่น ตอนเริ่มเกม
     }
 
-    public void setDefaultValues() {
+    public final void setDefaultValues() {
         // worldX = 100;   // เกิดที่ x = 100
         // worldY = 100;   // เกิดที่ y = 100
         // เปลี่ยนจุดเกิดให้ไปเกิดกลางๆ แผนที่โลกแทน (เช่น บล็อกที่ 23x21)
@@ -59,7 +57,7 @@ public class Player extends Entity {
         life = maxLife;    // ตอนเริ่มเกมให้เลือดเท่ากับเลือดเต็ม
     }
 
-    public void getPlayerImage() {
+    private void getPlayerImage() {
         // ใช้ ImageIcon โหลดรูปทั้ง 4 ทิศทางเข้ามาเก็บไว้
         imageUp = new ImageIcon("res/player/player_up.png").getImage();
         imageDown = new ImageIcon("res/player/player_down.png").getImage();
@@ -74,6 +72,10 @@ public class Player extends Entity {
 
 
     public void update() {
+        // ใช้ gp.getWidth() และ gp.getHeight() เพื่อดึงขนาดหน้าต่างที่ผู้เล่นกำลังดึงยืดอยู่ตลอดเวลา
+        // screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
+        // screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+
         // อัพเดตตำแหน่งของผู้เล่นตามปุ่มที่ถูกกด
         // เช็คว่ากดปุ่มไหนอยู่ ก็ให้ขยับพิกัด X, Y ไปทางนั้น
         // if (keyH.upPressed) { worldY -= speed; }
