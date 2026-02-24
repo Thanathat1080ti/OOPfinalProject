@@ -25,10 +25,10 @@ public class GreenSlime extends Entity {
     }
 
     public void getImage() {
-        imageUp = new ImageIcon("res/slime/slime_up.png").getImage();
-        imageDown = new ImageIcon("res/slime/slime_down.png").getImage();
-        imageLeft = new ImageIcon("res/slime/slime_left.png").getImage();
-        imageRight = new ImageIcon("res/slime/slime_right.png").getImage();
+        imageUp = new ImageIcon(getClass().getResource("/res/slime/slime_up.png")).getImage();
+        imageDown = new ImageIcon(getClass().getResource("/res/slime/slime_down.png")).getImage();
+        imageLeft = new ImageIcon(getClass().getResource("/res/slime/slime_left.png")).getImage();
+        imageRight = new ImageIcon(getClass().getResource("/res/slime/slime_right.png")).getImage();
     }
 
     // AI สุ่มทิศทางการเดิน

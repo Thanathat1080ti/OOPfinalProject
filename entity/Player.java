@@ -60,16 +60,16 @@ public class Player extends Entity {
     }
 
     public void getPlayerImage() {
-        // ใช้ ImageIcon โหลดรูปทั้ง 4 ทิศทางเข้ามาเก็บไว้
-        imageUp = new ImageIcon("res/player/player_up.png").getImage();
-        imageDown = new ImageIcon("res/player/player_down.png").getImage();
-        imageLeft = new ImageIcon("res/player/player_left.png").getImage();
-        imageRight = new ImageIcon("res/player/player_right.png").getImage();
+        // ใช้ getResource โหลดรูปทั้ง 4 ทิศทางเข้ามาเก็บไว้จาก classpath
+        imageUp = new ImageIcon(getClass().getResource("/res/player/player_up.png")).getImage();
+        imageDown = new ImageIcon(getClass().getResource("/res/player/player_down.png")).getImage();
+        imageLeft = new ImageIcon(getClass().getResource("/res/player/player_left.png")).getImage();
+        imageRight = new ImageIcon(getClass().getResource("/res/player/player_right.png")).getImage();
 
-        swordUp = new ImageIcon("res/sword/sword_up.png").getImage();
-        swordDown = new ImageIcon("res/sword/sword_down.png").getImage();
-        swordLeft = new ImageIcon("res/sword/sword_left.png").getImage();
-        swordRight = new ImageIcon("res/sword/sword_right.png").getImage();
+        swordUp = new ImageIcon(getClass().getResource("/res/sword/sword_up.png")).getImage();
+        swordDown = new ImageIcon(getClass().getResource("/res/sword/sword_down.png")).getImage();
+        swordLeft = new ImageIcon(getClass().getResource("/res/sword/sword_left.png")).getImage();
+        swordRight = new ImageIcon(getClass().getResource("/res/sword/sword_right.png")).getImage();
     }
 
 

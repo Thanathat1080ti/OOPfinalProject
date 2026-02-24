@@ -1,17 +1,10 @@
 package world;
 
 import game.GamePanel;
-
 import java.awt.Graphics;
 import java.io.File;
 import java.util.Scanner;
-
 import javax.swing.ImageIcon;
-
-import java.awt.Color;
-
-import java.io.File;
-import java.util.Scanner;
 
 public class TileManager {
     GamePanel gp;
@@ -24,20 +17,20 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // ขนาดของแผนที่ตามจำนวนคอลัมน์และแถวในโลก
 
         getTileType();
-        loadMap("res/map.txt"); // โหลดแผนที่จากไฟล์
+        loadMap("OOPfinalProject/res/map.txt"); // โหลดแผนที่จากไฟล์
     }
 
     // กำหนดว่าตัวเลขไหน คือบล็อคอะไร
     public void getTileType() {
         tile[0] = new Tile(); // เบอร์ 0: หญ้า (เดินผ่านได้)
-        tile[0].image = new ImageIcon("res/grass.png").getImage();
+        tile[0].image = new ImageIcon("OOPfinalProject/res/grass.png").getImage();
         
         tile[1] = new Tile(); // เบอร์ 1: กำแพง (เดินชน)
-        tile[1].image = new ImageIcon("res/wall.png").getImage();
+        tile[1].image = new ImageIcon("OOPfinalProject/res/wall.png").getImage();
         tile[1].collision = true; // กำหนดให้บล็อกที่ 1 มี collision = true
         
         tile[2] = new Tile(); // เบอร์ 2: น้ำ (เดินชน)
-        tile[2].image = new ImageIcon("res/water.png").getImage();
+        tile[2].image = new ImageIcon("OOPfinalProject/res/water.png").getImage();
         tile[2].collision = true; // กำหนดให้บล็อกที่ 2 มี collision = true
 
     }
