@@ -5,7 +5,8 @@ import input.KeyHandler;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
-import javax.swing.ImageIcon;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class Player extends Entity {
     
@@ -25,6 +26,7 @@ public class Player extends Entity {
 
     public boolean attacking = false; // ตัวแปรบอกว่ากำลังฟันดาบอยู่ไหม
     public Image swordUp, swordDown, swordLeft, swordRight; // กระเป๋าเก็บรูปดาบ
+    public Image imageUp, imageDown, imageLeft, imageRight; // ตัวแปรสำหรับเก็บรูปภาพผู้เล่น
 
     
     public Player(GamePanel gp, KeyHandler keyH) {
@@ -56,18 +58,23 @@ public class Player extends Entity {
         maxLife = 5;       // เลือดเต็ม 5
         life = maxLife;    // ตอนเริ่มเกมให้เลือดเท่ากับเลือดเต็ม
     }
-
-    private void getPlayerImage() {
-        // ใช้ ImageIcon โหลดรูปทั้ง 4 ทิศทางเข้ามาเก็บไว้
-        imageUp = new ImageIcon("res/player/player_up.png").getImage();
-        imageDown = new ImageIcon("res/player/player_down.png").getImage();
-        imageLeft = new ImageIcon("res/player/player_left.png").getImage();
-        imageRight = new ImageIcon("res/player/player_right.png").getImage();
-
-        swordUp = new ImageIcon("res/sword/sword_up.png").getImage();
-        swordDown = new ImageIcon("res/sword/sword_down.png").getImage();
-        swordLeft = new ImageIcon("res/sword/sword_left.png").getImage();
-        swordRight = new ImageIcon("res/sword/sword_right.png").getImage();
+private void getPlayerImage() {
+        try {
+            // เพิ่ม /player/ เข้าไปใน path ด้วยครับ
+            imageUp = ImageIO.read(getClass().getResourceAsStream("/res/player/player_up.png"));
+            imageDown = ImageIO.read(getClass().getResourceAsStream("/res/player/player_down.png"));
+            imageLeft = ImageIO.read(getClass().getResourceAsStream("/res/player/player_left.png"));
+            imageRight = ImageIO.read(getClass().getResourceAsStream("/res/player/player_right.png"));
+            
+            // เพิ่ม /sword/ เข้าไปใน path ด้วยครับ
+            swordUp = ImageIO.read(getClass().getResourceAsStream("/res/sword/sword_up.png"));
+            swordDown = ImageIO.read(getClass().getResourceAsStream("/res/sword/sword_down.png"));
+            swordLeft = ImageIO.read(getClass().getResourceAsStream("/res/sword/sword_left.png"));
+            swordRight = ImageIO.read(getClass().getResourceAsStream("/res/sword/sword_right.png"));
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

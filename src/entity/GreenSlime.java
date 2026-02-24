@@ -2,10 +2,10 @@ package entity;
 
 import game.GamePanel;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.Random;
-import javax.swing.ImageIcon;
-import java.awt.Image;
+import javax.imageio.ImageIO;
 
 public class GreenSlime extends Entity {
     GamePanel gp;
@@ -25,10 +25,14 @@ public class GreenSlime extends Entity {
     }
 
     public void getImage() {
-        imageUp = new ImageIcon("res/slime/slime_up.png").getImage();
-        imageDown = new ImageIcon("res/slime/slime_down.png").getImage();
-        imageLeft = new ImageIcon("res/slime/slime_left.png").getImage();
-        imageRight = new ImageIcon("res/slime/slime_right.png").getImage();
+        try {
+            imageUp = ImageIO.read(getClass().getResourceAsStream("/res/slime/slime_up.png"));
+            imageDown = ImageIO.read(getClass().getResourceAsStream("/res/slime/slime_down.png"));
+            imageLeft = ImageIO.read(getClass().getResourceAsStream("/res/slime/slime_left.png"));
+            imageRight = ImageIO.read(getClass().getResourceAsStream("/res/slime/slime_right.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // สุ่มทิศทางการเดิน
