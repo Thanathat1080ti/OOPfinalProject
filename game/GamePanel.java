@@ -63,6 +63,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
+    // เมธอดสำหรับเริ่มเกมใหม่
+    public void retry() {
+        player.setDefaultValues(); // รีเซ็ตตำแหน่งและเลือดของผู้เล่น (เรียกใช้เมธอดเดิมที่มีอยู่แล้ว)
+        setupMonsters();           // สุ่มเกิดสไลม์ใหม่ทั้งหมด
+    }
+
     // ลูปเกมหลัก
     public void startGameThread() {
         gameThread = new Thread(this);
@@ -124,26 +130,27 @@ public class GamePanel extends JPanel implements Runnable {
 
     // เมธอดสำหรับคำนวณตำแหน่งใหม่
     public void update() {
-        // อัพเดตตำแหน่งของผู้เล่นตามปุ่มที่ถูกกด
-        // เช็คว่ากดปุ่มไหนอยู่ ก็ให้ขยับพิกัด X, Y ไปทางนั้น
-        // if (keyH.upPressed) { playerY -= playerSpeed; }
-        // if (keyH.downPressed) { playerY += playerSpeed; }
-        // if (keyH.leftPressed) { playerX -= playerSpeed; }
-        // if (keyH.rightPressed) { playerX += playerSpeed; }
-
-        player.update(); // เรียกเมธอด update ของ Player เพื่ออัพเดตตำแหน่งของมัน
-        // ถ้าสไลม์ยังมีชีวิตอยู่ ถึงจะยอมให้มันเดิน
-        // วนลูปเช็คสไลม์ทั้ง 10 ตัว
-        for (int i = 0; i < greenSlime.length; i++) {
-            if (greenSlime[i] != null) {
-                if (greenSlime[i].alive == true) {
-                    greenSlime[i].update(); // ถ้ายังมีชีวิต ให้เดินต่อ
-                } else {
-                    // *** ถ้าตัวไหนตาย ให้สุ่มเกิดใหม่ทันที! ***
-                    spawnSlime(i);
+        // --- ถ้ายกตัวละครเลือดหมด (GAME OVER) ---
+        if (player.life <= 0) {
+            // รอเช็คว่าผู้เล่นกดปุ่ม Enter หรือยัง
+            if (keyH.enterPressed == true) {
+                retry(); // เรียกเมธอดเริ่มเกมใหม่
+            }
+        } 
+        // --- ถ้ายังมีชีวิตอยู่ (เล่นปกติ) ---
+        else {
+            player.update(); 
+            
+            for (int i = 0; i < greenSlime.length; i++) {
+                if (greenSlime[i] != null) {
+                    if (greenSlime[i].alive == true) {
+                        greenSlime[i].update(); 
+                    } else {
+                        spawnSlime(i);
+                    }
                 }
             }
-        }  
+        }
     }
 
     
@@ -162,7 +169,9 @@ public class GamePanel extends JPanel implements Runnable {
             g.setColor(Color.RED);
             // คาดคะเนตำแหน่งกึ่งกลางจอ
             g.drawString("GAME OVER", screenWidth / 2 - 250, screenHeight / 2);
-            gameThread = null; // สั่งหยุดลูปเกมทันที (เกมค้าง)
+            g.setFont(new Font("Arial", Font.BOLD, 40));
+            g.setColor(Color.BLACK);
+            g.drawString("Press ENTER to Respawn", screenWidth / 2 - 250, screenHeight / 2 + 100);
         }
     }
 
@@ -191,6 +200,7 @@ public class GamePanel extends JPanel implements Runnable {
         drawUI(g); // วาด UI (เลือด, EXP, Lv.)
         g.dispose(); // ปล่อยทรัพยากรกราฟิกที่ไม่ใช้แล้ว (คืนความจำ)
     }
+
 }
 
 

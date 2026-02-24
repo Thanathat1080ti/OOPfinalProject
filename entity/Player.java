@@ -48,8 +48,8 @@ public class Player extends Entity {
         // worldX = 100;   // เกิดที่ x = 100
         // worldY = 100;   // เกิดที่ y = 100
         // เปลี่ยนจุดเกิดให้ไปเกิดกลางๆ แผนที่โลกแทน (เช่น บล็อกที่ 23x21)
-        worldX = gp.tileSize * 23; 
-        worldY = gp.tileSize * 21;
+        worldX = gp.tileSize * 23;  // 
+        worldY = gp.tileSize * 21;  // 
 
         speed = 10;      // ความเร็วในการเคลื่อนที่
         direction = "down"; // ทิศทางเริ่มต้น

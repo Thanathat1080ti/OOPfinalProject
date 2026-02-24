@@ -7,6 +7,8 @@ public class KeyHandler implements KeyListener {
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean attackPressed; // ตัวแปรสำหรับปุ่มโจมตี (SpaceBar)
+    // เพิ่มตัวแปรปุ่ม Enter
+    public boolean enterPressed;
 
     public void keyTyped(KeyEvent e) {
         // Not used
@@ -23,6 +25,9 @@ public class KeyHandler implements KeyListener {
 
         // เพิ่มปุ่มโจมตี (SpaceBar)
         if (code == KeyEvent.VK_SPACE) {attackPressed = true; }
+
+        // ดักจับปุ่ม Enter
+        if (code == KeyEvent.VK_ENTER) { enterPressed = true; }
     }
 
     @Override
@@ -34,6 +39,7 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_A) { leftPressed = false; }
         if (code == KeyEvent.VK_D) { rightPressed = false; }
         if (code == KeyEvent.VK_SPACE) { attackPressed = false; }
+        if (code == KeyEvent.VK_ENTER) { enterPressed = false; }
     }
 
 }
