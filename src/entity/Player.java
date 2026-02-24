@@ -6,9 +6,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 public class Player extends Entity {
     
@@ -60,24 +58,22 @@ public class Player extends Entity {
         maxLife = 5;       // เลือดเต็ม 5
         life = maxLife;    // ตอนเริ่มเกมให้เลือดเท่ากับเลือดเต็ม
     }
-
-    private void getPlayerImage() {
-        // 2. ใช้ try-catch ครอบเอาไว้ เพราะ ImageIO บังคับให้เราดักจับ Error กรณีหาไฟล์ไม่เจอครับ
+private void getPlayerImage() {
         try {
-            // สังเกตว่าเราต้องใส่เครื่องหมาย / ไว้หน้า res ด้วย เพื่อบอกให้เริ่มหาจากโฟลเดอร์ src 
-            imageUp = ImageIO.read(getClass().getResourceAsStream("/res/player_up.png"));
-            imageDown = ImageIO.read(getClass().getResourceAsStream("/res/player_down.png"));
-            imageLeft = ImageIO.read(getClass().getResourceAsStream("/res/player_left.png"));
-            imageRight = ImageIO.read(getClass().getResourceAsStream("/res/player_right.png"));
+            // เพิ่ม /player/ เข้าไปใน path ด้วยครับ
+            imageUp = ImageIO.read(getClass().getResourceAsStream("/res/player/player_up.png"));
+            imageDown = ImageIO.read(getClass().getResourceAsStream("/res/player/player_down.png"));
+            imageLeft = ImageIO.read(getClass().getResourceAsStream("/res/player/player_left.png"));
+            imageRight = ImageIO.read(getClass().getResourceAsStream("/res/player/player_right.png"));
             
-            // โหลดรูปดาบด้วย ImageIO เช่นกัน
-            swordUp = ImageIO.read(getClass().getResourceAsStream("/res/sword_up.png"));
-            swordDown = ImageIO.read(getClass().getResourceAsStream("/res/sword_down.png"));
-            swordLeft = ImageIO.read(getClass().getResourceAsStream("/res/sword_left.png"));
-            swordRight = ImageIO.read(getClass().getResourceAsStream("/res/sword_right.png"));
+            // เพิ่ม /sword/ เข้าไปใน path ด้วยครับ
+            swordUp = ImageIO.read(getClass().getResourceAsStream("/res/sword/sword_up.png"));
+            swordDown = ImageIO.read(getClass().getResourceAsStream("/res/sword/sword_down.png"));
+            swordLeft = ImageIO.read(getClass().getResourceAsStream("/res/sword/sword_left.png"));
+            swordRight = ImageIO.read(getClass().getResourceAsStream("/res/sword/sword_right.png"));
             
         } catch (IOException e) {
-            e.printStackTrace(); // ถ้าหาไฟล์ไม่เจอ มันจะปริ้นท์บอกบรรทัดที่พังสีแดงๆ ออกมาให้เราแก้ได้ง่ายครับ
+            e.printStackTrace();
         }
     }
 

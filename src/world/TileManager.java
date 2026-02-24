@@ -17,8 +17,7 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; 
 
         getTileType();
-        
-        // โหลดแผนที่ด้วย InputStream เพื่อให้อ่านจากโฟลเดอร์ res ใน src ได้
+        // โหลดแผนที่ด้วย InputStream ที่ถูกต้อง
         loadMap(getClass().getResourceAsStream("/res/map.txt")); 
     }
 
@@ -48,7 +47,6 @@ public class TileManager {
         }
     }
 
-    // เปลี่ยนให้รับพารามิเตอร์เป็น InputStream
     public void loadMap(InputStream is) {
         try {
             Scanner scanner = new Scanner(is); 
