@@ -6,7 +6,7 @@ public class Main {
         JFrame window = new JFrame("Slime Adventure");
         // window.setSize(GameConfig.WIDTH, GameConfig.HEIGHT);
         
-        window.setVisible(true);                            
+        window.setVisible(true);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // X (exit button)
         
         window.setResizable(true); // ไม่ให้ปรับขนาดหน้าต่างได้

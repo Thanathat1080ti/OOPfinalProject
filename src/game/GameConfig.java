@@ -1,4 +1,4 @@
-package game;
+package res.src.game;
 
 // set ค่าคงที่ต่างๆ
 public final class GameConfig {

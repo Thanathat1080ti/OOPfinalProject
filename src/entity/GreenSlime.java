@@ -1,4 +1,4 @@
-package entity;
+package res.src.entity;
 
 import game.GamePanel;
 import java.awt.Graphics;

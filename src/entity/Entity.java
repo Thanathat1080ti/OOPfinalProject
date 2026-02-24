@@ -1,4 +1,4 @@
-package entity;
+package res.src.entity;
 
 import java.awt.Image;
 import java.awt.Rectangle;

@@ -1,9 +1,12 @@
-package world;
+package res.src.world;
 
 import game.GamePanel;
 import java.awt.Graphics;
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
+
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 public class TileManager {
@@ -17,35 +20,36 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // ขนาดของแผนที่ตามจำนวนคอลัมน์และแถวในโลก
 
         getTileType();
-        loadMap("res/map.txt"); // โหลดแผนที่จากไฟล์
+        // loadMap("res/map.txt"); // โหลดแผนที่จากไฟล์
+        getClass().getResourceAsStream("/res/map.txt")
     }
 
     // กำหนดว่าตัวเลขไหน คือบล็อคอะไร
     public void getTileType() {
-        tile[0] = new Tile(); // เบอร์ 0: หญ้า (เดินผ่านได้)
-        tile[0].image = new ImageIcon("res/grass.png").getImage();
-        
-        tile[1] = new Tile(); // เบอร์ 1: กำแพง (เดินชน)
-        tile[1].image = new ImageIcon("res/wall.png").getImage();
-        tile[1].collision = true; // กำหนดให้บล็อกที่ 1 มี collision = true
-        
-        tile[2] = new Tile(); // เบอร์ 2: น้ำ (เดินชน)
-        tile[2].image = new ImageIcon("res/water.png").getImage();
-        tile[2].collision = true; // กำหนดให้บล็อกที่ 2 มี collision = true
+        try {
+            tile[0] = new Tile(); 
+            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/res/grass.png")); 
+            
+            tile[1] = new Tile(); 
+            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/res/wall.png"));
+            tile[1].collision = true; 
+            
+            tile[2] = new Tile(); 
+            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/res/water.png"));
+            tile[2].collision = true; 
 
-        tile[3] = new Tile(); // เบอร์ 3: wood (เดินชน)
-        tile[3].image = new ImageIcon("res/wood.png").getImage();
-        tile[3].collision = true; // กำหนดให้บล็อกที่ 3 มี collision = true
+            tile[3] = new Tile();
+            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/res/wood.png"));
+            tile[3].collision = true;
 
-        tile[4] = new Tile(); // เบอร์ 4: leaf (เดินชน)
-        tile[4].image = new ImageIcon("res/leaf.png").getImage();
-        tile[4].collision = true; // กำหนดให้บล็อกที่ 4 มี collision = true
+            tile[4] = new Tile();
+            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/res/leaf.png"));
+            tile[4].collision = true;
 
-        tile[5] = new Tile(); // เบอร์ 5: หญ้า2 (เดินผ่านได้)
-        tile[5].image = new ImageIcon("res/grass2.png").getImage();
-        
-        tile[6] = new Tile(); // เบอร์ 6: หญ้า3 (เดินผ่านได้)
-        tile[6].image = new ImageIcon("res/grass3.png").getImage();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         
 
 

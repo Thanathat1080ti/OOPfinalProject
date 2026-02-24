@@ -1,4 +1,4 @@
-package game;
+package res.src.game;
 
 import entity.GreenSlime;
 import entity.Player;
