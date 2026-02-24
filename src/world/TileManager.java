@@ -23,25 +23,33 @@ public class TileManager {
 
     public void getTileType() {
         try {
-            tile[0] = new Tile(); 
+            tile[0] = new Tile(); // grass
             tile[0].image = ImageIO.read(getClass().getResourceAsStream("/res/grass.png")); 
             
-            tile[1] = new Tile(); 
+            tile[1] = new Tile(); // wall
             tile[1].image = ImageIO.read(getClass().getResourceAsStream("/res/wall.png"));
             tile[1].collision = true; 
             
-            tile[2] = new Tile(); 
+            tile[2] = new Tile(); // water
             tile[2].image = ImageIO.read(getClass().getResourceAsStream("/res/water.png"));
             tile[2].collision = true; 
 
-            tile[3] = new Tile();
+            tile[3] = new Tile();   // wood
             tile[3].image = ImageIO.read(getClass().getResourceAsStream("/res/wood.png"));
             tile[3].collision = true;
 
-            tile[4] = new Tile();
+            tile[4] = new Tile(); // leaf
             tile[4].image = ImageIO.read(getClass().getResourceAsStream("/res/leaf.png"));
             tile[4].collision = true;
             
+            tile[5] = new Tile(); // grass2
+            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/res/grass2.png"));
+
+            tile[6] = new Tile(); // grass3
+            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/res/grass3.png"));
+            
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
