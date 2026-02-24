@@ -1,5 +1,6 @@
 package game;
 
+import entity.BigBad;
 import entity.GreenSlime;
 import entity.Player;
 import input.KeyHandler;
@@ -42,6 +43,8 @@ public class GamePanel extends JPanel implements Runnable {
     // สร้าง Object ตัวละคร โดยส่ง GamePanel (this) และ KeyHandler
     public Player player = new Player(this, keyH);
     public GreenSlime[] greenSlime = new GreenSlime[10];    // สร้างอาร์เรย์สำหรับเก็บสไลม์ได้สูงสุด 10 ตัว
+    public BigBad[] bosses = new BigBad[6]; // สร้าง Array สำหรับเก็บ BigBad 6 ตัว
+
 
     // Objects ฉาก
     public TileManager tileM = new TileManager(this); // สร้างตัวจัดการแผนที่ โดยส่ง GamePanel (this) ให้
@@ -58,14 +61,16 @@ public class GamePanel extends JPanel implements Runnable {
         // กำหนดตำแหน่งเริ่มต้นของสไลม์
         // greenSlime.worldX = tileSize * 5; // เกิดที่คอลัมน์ 5
         // greenSlime.worldY = tileSize * 5; // เกิดที่แถว 5
-        setupMonsters(); // เรียกเมธอดสำหรับสร้างสไลม์ทั้ง 10 ตัว
+        setupSlimes(); // เรียกเมธอดสำหรับสร้างสไลม์ทั้ง 10 ตัว
+        setupBosses(); // เรียกเมธอดสำหรับสร้างบอสทั้ง 6 ตัว
 
     }
 
     // เมธอดสำหรับเริ่มเกมใหม่
     public void retry() {
         player.setDefaultValues(); // รีเซ็ตตำแหน่งและเลือดของผู้เล่น (เรียกใช้เมธอดเดิมที่มีอยู่แล้ว)
-        setupMonsters();           // สุ่มเกิดสไลม์ใหม่ทั้งหมด
+        setupSlimes();           // สุ่มเกิดสไลม์ใหม่ทั้งหมด
+        setupBosses();           // สุ่มเกิดบอสใหม่ทั้งหมด
     }
 
     // ลูปเกมหลัก
@@ -97,7 +102,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     // เมธอดสำหรับเริ่มเกม เรียกสร้างสไลม์ทั้ง 10 ตัว
-    public void setupMonsters() {
+    public void setupSlimes() {
         for (int i = 0; i < greenSlime.length; i++) {
             spawnSlime(i);
         }
@@ -162,6 +167,46 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    public void setupBosses() {
+        for (int i = 0; i < bosses.length; i++) {
+            spawnBoss(i);
+        }
+    }
+
+    public void spawnBoss(int index) {
+        if (bosses[index] == null) {
+            bosses[index] = new BigBad(this); 
+        }
+        bosses[index].alive = true;
+        bosses[index].life = 15; // รีเซ็ตเลือดบอส
+
+        boolean validPosition = false;
+        java.util.Random random = new java.util.Random();
+
+        while (!validPosition) {
+            // สุ่มพิกัด (ลบ 1 ไว้เพื่อไม่ให้บอสขนาด 2x2 ไปเกิดชิดขอบโลกเกินไปจน error)
+            int randomCol = random.nextInt(maxWorldCol - 1);
+            int randomRow = random.nextInt(maxWorldRow - 1);
+            
+            // เช็คว่าพื้นที่ 2x2 บล็อก (4 ช่อง) ต้องเป็นพื้นที่ว่างทั้งหมด
+            int t1 = tileM.mapTileNum[randomCol][randomRow];
+            int t2 = tileM.mapTileNum[randomCol + 1][randomRow];
+            int t3 = tileM.mapTileNum[randomCol][randomRow + 1];
+            int t4 = tileM.mapTileNum[randomCol + 1][randomRow + 1];
+
+            if (tileM.tile[t1].collision == false && tileM.tile[t2].collision == false &&
+                tileM.tile[t3].collision == false && tileM.tile[t4].collision == false) {
+                
+                bosses[index].worldX = randomCol * tileSize;
+                bosses[index].worldY = randomRow * tileSize;
+                validPosition = true; 
+            }
+        }
+    }
+
+
+
+
     // เมธอดสำหรับคำนวณตำแหน่งใหม่
     public void update() {
         // --- ถ้ายกตัวละครเลือดหมด (GAME OVER) ---
@@ -181,6 +226,16 @@ public class GamePanel extends JPanel implements Runnable {
                         greenSlime[i].update(); 
                     } else {
                         spawnSlime(i);
+                    }
+                }
+            }
+
+            for (int i = 0; i < bosses.length; i++) {
+                if (bosses[i] != null) {
+                    if (bosses[i].alive == true) {
+                        bosses[i].update(); 
+                    } else {
+                        spawnBoss(i); // ถ้าบอสตาย ให้เกิดใหม่
                     }
                 }
             }
@@ -243,17 +298,22 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
 
-        // --- 🌟 สิ่งที่ต้องเพิ่ม: อัปเดตจุดกึ่งกลางกล้อง ณ วินาทีที่วาดภาพ ทันที! ---
+        // --- อัปเดตจุดกึ่งกลางกล้อง ณ วินาทีที่วาดภาพ ทันที! ---
         player.screenX = getWidth() / 2 - (tileSize / 2);
         player.screenY = getHeight() / 2 - (tileSize / 2);
         // -----------------------------------------------------------
 
-        // คำสั่งวาดภาพด้านล่างนี้ จะใช้ screenX และ screenY ที่ถูกต้องเสมอครับ!
+        // คำสั่งวาดภาพด้านล่างนี้ จะใช้ screenX และ screenY ที่ถูกต้องเสมอ
         tileM.draw(g2);
         
         for (GreenSlime slime : greenSlime) {
             if (slime != null && slime.alive == true) {
                 slime.draw(g2); 
+            }
+        }
+        for (BigBad boss : bosses) {
+            if (boss != null && boss.alive == true) {
+                boss.draw(g2); 
             }
         }
         

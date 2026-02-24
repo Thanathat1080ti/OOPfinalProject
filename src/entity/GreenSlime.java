@@ -131,7 +131,7 @@ public class GreenSlime extends Entity {
             
             Image image = null;
 
-            // เช็คว่า AI สไลม์กำลังหันหน้าไปทางไหน ก็เอารูปนั้นมาเตรียมไว้
+            // เช็คว่า สไลม์กำลังหันหน้าไปทางไหน ก็เอารูปนั้นมาเตรียมไว้
             switch (direction) {
                 case "up":
                     image = imageUp;

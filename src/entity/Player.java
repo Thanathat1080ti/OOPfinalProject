@@ -58,7 +58,7 @@ public class Player extends Entity {
         maxLife = 5;       // เลือดเต็ม 5
         life = maxLife;    // ตอนเริ่มเกมให้เลือดเท่ากับเลือดเต็ม
     }
-private void getPlayerImage() {
+    private void getPlayerImage() {
         try {
             // เพิ่ม /player/ เข้าไปใน path ด้วยครับ
             imageUp = ImageIO.read(getClass().getResourceAsStream("/res/player/player_up.png"));
@@ -186,6 +186,53 @@ private void getPlayerImage() {
                     }
                 }
             }
+
+            // --- วนลูปเช็คว่าดาบไปฟันโดนบอส (BigBad) ตัวไหนบ้าง ---
+            for (int i = 0; i < gp.bosses.length; i++) {
+                if (gp.bosses[i] != null && gp.bosses[i].alive == true) {
+                    
+                    Rectangle bossHitbox = new Rectangle(
+                            gp.bosses[i].worldX + gp.bosses[i].solidArea.x, 
+                            gp.bosses[i].worldY + gp.bosses[i].solidArea.y, 
+                            gp.bosses[i].solidArea.width, 
+                            gp.bosses[i].solidArea.height
+                    );
+
+                    if (swordHitbox.intersects(bossHitbox)) {
+                        gp.bosses[i].life -= 1; 
+                        
+                        // ระบบกระเด็นของบอส
+                        int knockbackDistance = gp.tileSize; 
+                        String tempDirection = gp.bosses[i].direction;
+                        int tempSpeed = gp.bosses[i].speed;
+
+                        gp.bosses[i].direction = direction; 
+                        gp.bosses[i].speed = knockbackDistance;
+                        gp.bosses[i].collisionOn = false;
+                        gp.cChecker.checkTile(gp.bosses[i]);
+
+                        if (gp.bosses[i].collisionOn == false) {
+                            switch (direction) {
+                                case "up": gp.bosses[i].worldY -= knockbackDistance; break;
+                                case "down": gp.bosses[i].worldY += knockbackDistance; break;
+                                case "left": gp.bosses[i].worldX -= knockbackDistance; break;
+                                case "right": gp.bosses[i].worldX += knockbackDistance; break;
+                            }
+                        }
+
+                        gp.bosses[i].direction = tempDirection;
+                        gp.bosses[i].speed = tempSpeed;
+                        
+                        if (gp.bosses[i].life <= 0) {
+                            gp.bosses[i].alive = false; 
+                            System.out.println("BigBad defeated!");
+                            gainExp(100); // 🌟 ฆ่าบอสได้ EXP 100 จุกๆ ไปเลย!
+                        }
+                        break; // ฟันโดน 1 ตัวแล้วหยุดเช็คดาบทะลุ
+                    }
+                }
+            }
+
             // ----------------------------------------------------
 
 
