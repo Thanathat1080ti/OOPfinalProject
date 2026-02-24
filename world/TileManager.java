@@ -40,6 +40,15 @@ public class TileManager {
         tile[2].image = new ImageIcon("res/water.png").getImage();
         tile[2].collision = true; // กำหนดให้บล็อกที่ 2 มี collision = true
 
+        tile[3] = new Tile(); // เบอร์ 3: wood (เดินชน)
+        tile[3].image = new ImageIcon("res/wood.png").getImage();
+        tile[3].collision = true; // กำหนดให้บล็อกที่ 3 มี collision = true
+
+        tile[4] = new Tile(); // เบอร์ 4: leaf (เดินชน)
+        tile[4].image = new ImageIcon("res/leaf.png").getImage();
+        tile[4].collision = true; // กำหนดให้บล็อกที่ 4 มี collision = true
+
+
     }
 
     public void loadMap(String filePath) {

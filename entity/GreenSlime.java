@@ -31,7 +31,7 @@ public class GreenSlime extends Entity {
         imageRight = new ImageIcon("res/slime/slime_right.png").getImage();
     }
 
-    // AI สุ่มทิศทางการเดิน
+    // สุ่มทิศทางการเดิน
     public void setAction() {
         actionLockCounter++;
 
