@@ -170,7 +170,7 @@ public class Player extends Entity {
                         
                         if (gp.greenSlime[i].life <= 0) {
                             gp.greenSlime[i].alive = false; 
-                            System.out.println("กำจัดสไลม์ได้ 1 ตัว!");
+                            System.out.println("Slime defeated!");
                             gainExp(25); 
                         }
                         break;
@@ -286,7 +286,7 @@ public class Player extends Entity {
             nextLevelExp = nextLevelExp * 2; // เลเวลถัดไปใช้ EXP เยอะขึ้น 2 เท่า
             maxLife++; // เพิ่มเลือดสูงสุด
             life = maxLife; // ฮีลเลือดให้เต็ม
-            System.out.println("เลเวลอัป! ตอนนี้เลเวล " + level);
+            System.out.println("Level Up! Current level is " + level);
         }
     }
 
