@@ -294,7 +294,7 @@ public class Player extends Entity {
             level++; // เพิ่มเลเวล
             exp = exp - nextLevelExp; // หัก EXP ที่ใช้ไป
             nextLevelExp = nextLevelExp * 2; // เลเวลถัดไปใช้ EXP เยอะขึ้น 2 เท่า
-            maxLife++; // เพิ่มเลือดสูงสุด
+            maxLife += 10; // เพิ่มเลือดสูงสุด
             life = maxLife; // ฮีลเลือดให้เต็ม
             System.out.println("Level Up! Current level is " + level);
         }
