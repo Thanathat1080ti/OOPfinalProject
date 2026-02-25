@@ -21,3 +21,5 @@ public class Main {
         gamePanel.startGameThread(); // เริ่มลูปเกม
     }
 }
+
+

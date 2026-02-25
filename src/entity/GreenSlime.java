@@ -2,6 +2,7 @@ package entity;
 
 import game.GameConfig;
 import game.GamePanel;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;

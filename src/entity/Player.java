@@ -3,6 +3,7 @@ package entity;
 import game.GameConfig;
 import game.GamePanel;
 import input.KeyHandler;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
