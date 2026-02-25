@@ -9,17 +9,19 @@ public class Main {
         
         window.setResizable(true); // ปรับขนาดหน้าต่างได้
         
-        GamePanel gamePanel = new GamePanel();
-        window.add(gamePanel);
-
+        // GamePanel gamePanel = new GamePanel();
+        // window.add(gamePanel);
+        MainMenu mainMenu = new MainMenu(window);
+        window.add(mainMenu);
+        
         // window.setSize(GameConfig.WIDTH, GameConfig.HEIGHT);
         window.pack(); // ให้ JFrame ปรับขนาดตามขนาดของ GamePanel ที่เราจะเพิ่มเข้าไป
         
         window.setLocationRelativeTo(null); // ให้หน้าต่างแสดงตรงกลางจอ
         window.setVisible(true);
 
-        gamePanel.requestFocusInWindow(); // ให้ JPanel รับโฟกัสเพื่อรับปุ่มกด
-        gamePanel.startGameThread(); // เริ่มลูปเกม
+        // gamePanel.requestFocusInWindow(); // ให้ JPanel รับโฟกัสเพื่อรับปุ่มกด
+        // gamePanel.startGameThread(); // เริ่ม loop เกม
     }
 }
 
