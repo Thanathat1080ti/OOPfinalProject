@@ -22,40 +22,55 @@ public class GamePanel extends JPanel implements Runnable {
     private final int maxScreenCol = GameConfig.MAX_SCREEN_COL;
     private final int maxScreenRow = GameConfig.MAX_SCREEN_ROW;
     
-    private final int screenWidth = tileSize * maxScreenCol; // 768 พิกเซล
-    private final int screenHeight = tileSize * maxScreenRow; // 576 พิกเซล
+    private final int screenWidth = tileSize * maxScreenCol;
+    private final int screenHeight = tileSize * maxScreenRow;
 
     // --- ตั้งค่าแผนที่โลก (World Settings) ---
-    // สร้างโลกให้กว้างใหญ่ 50x50 บล็อก
+    // สร้างโลกให้กว้างใหญ่ขึ้นเป็น 50x50 บล็อก (800x800 พิกเซล)
     public final int maxWorldCol = 50; 
     public final int maxWorldRow = 50;
 
-    // int playerX = 100;
-    // int playerY = 100;
-    // int playerSpeed = 4;
 
-    // Objects พื้นฐานของเกม
-    private final KeyHandler keyH = new KeyHandler(); // สร้างตัวรับปุ่มกด
     private Thread gameThread;  // สร้างตตัวจัดการลูปเกม
-
+    
     // สร้างตัวเช็คการชน โดยส่ง GamePanel (this)
     public CollisionChecker cChecker = new CollisionChecker(this); 
-
+    
+    // Objects ตัวรับปุ่มกด
+    private final KeyHandler keyH = new KeyHandler(); // สร้างตัวรับปุ่มกด
+    
     // สร้าง Object ตัวละคร โดยส่ง GamePanel (this) และ KeyHandler
     public Player player = new Player(this, keyH);
     public GreenSlime[] greenSlime = new GreenSlime[10];    // สร้างอาร์เรย์สำหรับเก็บสไลม์ได้สูงสุด 10 ตัว
     public BigBad[] bosses = new BigBad[6]; // สร้าง Array สำหรับเก็บ BigBad 6 ตัว
 
-
-    // ระบบแสดงตัวเลขดาเมจ
-    private ArrayList<DamageNumber> damageNumbers = new ArrayList<>();
-
+    
     // Objects ฉาก
     public TileManager tileM = new TileManager(this); // สร้างตัวจัดการแผนที่ โดยส่ง GamePanel (this) ให้
+    
+    // ระบบแสดงตัวเลขดาเมจ
+    private ArrayList<DamageNumber> damageNumbers = new ArrayList<>();
 
     // สร้าง Object จากคลาส Sound
     Sound music = new Sound();
     Sound se = new Sound(); // สำหรับ Sound Effects (เสียงสั้นๆ)
+
+
+    // Constructor
+    public GamePanel() {
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+
+        this.setBackground(Color.GRAY);
+
+        this.addKeyListener(keyH);          // เพิ่ม KeyHandler เป็นตัวรับปุ่มกด
+        this.setFocusable(true); // บังคับรับให้ JPanel สามารถรับปุ่มกดได้
+
+        setupSlime(); // เรียกเมธอดสำหรับสร้างสไลม์ทั้ง 10 ตัว
+        setupBosses(); // เรียกเมธอดสำหรับสร้างบอสทั้ง 6 ตัว
+        setupGame(); // <--- เพิ่มบรรทัดนี้ เพื่อให้เพลงเริ่มทำงานตอนเปิดเกม
+
+    }
+
 
     // สร้าง Method สำหรับสั่งเล่นเพลง BGM (Background Music)
     public void playMusic(int i) {
@@ -80,24 +95,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
 
-    public GamePanel() {
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-
-        this.setBackground(Color.GRAY);
-
-        this.addKeyListener(keyH); // เพิ่ม KeyHandler เป็นตัวรับปุ่มกด
-        this.setFocusable(true); // บังคับรับให้ JPanel สามารถรับปุ่มกดได้
-
-        // กำหนดตำแหน่งเริ่มต้นของสไลม์
-        // greenSlime.worldX = tileSize * 5; // เกิดที่คอลัมน์ 5
-        // greenSlime.worldY = tileSize * 5; // เกิดที่แถว 5
-        setupSlime(); // เรียกเมธอดสำหรับสร้างสไลม์ทั้ง 10 ตัว
-        setupBosses(); // เรียกเมธอดสำหรับสร้างบอสทั้ง 6 ตัว
-
-        setupGame(); // <--- เพิ่มบรรทัดนี้ เพื่อให้เพลงเริ่มทำงานตอนเปิดเกม
-
-    }
-
     // เมธอดสำหรับเริ่มเกมใหม่
     public void retry() {
         player.setDefaultValues(); // รีเซ็ตตำแหน่งและเลือดของผู้เล่น (เรียกใช้เมธอดเดิมที่มีอยู่แล้ว)
@@ -105,11 +102,13 @@ public class GamePanel extends JPanel implements Runnable {
         setupBosses();          // สุ่มเกิดบอสใหม่ทั้งหมด
     }
 
+
     // ลูปเกมหลัก
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
+
 
     // Game Loop
     public void run() {
@@ -133,19 +132,21 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    // เมธอดสำหรับเริ่มเกม เรียกสร้างสไลม์ทั้ง 10 ตัว
+    // เรียกสร้างสไลม์ทั้ง 10 ตัว
     public void setupSlime() {
         for (int i = 0; i < greenSlime.length; i++) {
             spawnSlime(i);
         }
     }
 
+    // เรียกสร้างบอสทั้ง 6 ตัว
     public void setupBosses() {
         for (int i = 0; i < bosses.length; i++) {
             spawnBoss(i);
         }
     }
 
+    // เมธอดสำหรับสุ่มพิกัดเกิดให้บอสทีละตัว
     public void spawnBoss(int index) {
         if (bosses[index] == null) {
             bosses[index] = new BigBad(this); 
@@ -177,31 +178,6 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-
-
-    // // เมธอดสุ่มพิกัดเกิดให้สไลม์ทีละตัว
-    // public void spawnSlime(int index) {
-    //     greenSlime[index] = new GreenSlime(this); // สร้างสไลม์ตัวใหม่
-    //     boolean validPosition = false;
-    //     java.util.Random random = new java.util.Random();
-
-    //     while (!validPosition) {
-    //         // สุ่มคอลัมน์และแถวในขอบเขตแผนที่โลก (50x50)
-    //         int randomCol = random.nextInt(maxWorldCol);
-    //         int randomRow = random.nextInt(maxWorldRow);
-            
-    //         // ดึงข้อมูลว่าช่องที่สุ่มได้ คือบล็อกหมายเลขอะไร
-    //         int tileNum = tileM.mapTileNum[randomCol][randomRow];
-
-    //         // เช็คว่าบล็อกนั้น "ไม่มีการชน (collision == false)" เช่น เป็นพื้นหญ้า
-    //         if (tileM.tile[tileNum].collision == false) {
-    //             // ถ้าเป็นที่ว่าง ก็จับสไลม์ไปวางตรงนั้นเลย
-    //             greenSlime[index].worldX = randomCol * tileSize;
-    //             greenSlime[index].worldY = randomRow * tileSize;
-    //             validPosition = true; // ออกจากลูปสุ่ม
-    //         }
-    //     }
-    // }
 
     // เมธอดสุ่มพิกัดเกิดให้สไลม์ทีละตัว
     public void spawnSlime(int index) {
@@ -238,16 +214,17 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    // เมธอดสำหรับคำนวณตำแหน่งใหม่
+
+    // เมธอดสำหรับอัพเดตตำแหน่งและสถานะต่างๆ ของตัวละครและมอนสเตอร์
     public void update() {
-        // --- ถ้ายกตัวละครเลือดหมด (GAME OVER) ---
+        // ถ้ายกตัวละครเลือดหมด (GAME OVER)
         if (player.life <= 0) {
             // รอเช็คว่าผู้เล่นกดปุ่ม Enter หรือยัง
             if (keyH.enterPressed == true) {
                 retry(); // เรียกเมธอดเริ่มเกมใหม่
             }
         } 
-        // --- ถ้ายังมีชีวิตอยู่ (เล่นปกติ) ---
+        // ถ้ายังมีชีวิตอยู่ (เล่นปกติ)
         else {
             player.update(); 
             
@@ -283,7 +260,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    
+
     // เมธอดสำหรับวาด UI (เช่น เลือด, EXP, Lv.)
     public void drawUI(Graphics g) {
         // วาดตัวอักษรบอกสถานะมุมซ้ายบน
@@ -303,136 +280,114 @@ public class GamePanel extends JPanel implements Runnable {
             g.setColor(Color.WHITE);
             g.drawString("Press ENTER to Respawn", getWidth() / 2 - 250, getHeight() / 2 + 100);
         }
-
-
-
     }
 
-    // @Override
-    // protected void paintComponent(Graphics g) {
-    //     super.paintComponent(g);
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);                     // เรียก paintComponent ของ JPanel เพื่อเคลียร์หน้าจอและเตรียมวาดใหม่
+        Graphics2D g2 = (Graphics2D) g.create();     // สร้าง Graphics2D object ใหม่จาก Graphics เดิม เพื่อให้สามารถปรับแต่งได้มากขึ้น
+
+        // คำนวณตำแหน่งของผู้เล่นให้อยู่ตรงกลางหน้าจอเสมอ
+        player.screenX = getWidth() / 2 - (tileSize / 2);
+        player.screenY = getHeight() / 2 - (tileSize / 2);
         
-    //     // g.setColor(Color.YELLOW);
-    //     // g.fillRect(playerX, playerY, 50, 50);   // ตัวอย่างการวาดสี่เหลี่ยมสีเหลือง
+        // วาดฉากพื้นหลังและวัตถุต่างๆ
+        tileM.draw(g2);
+        
+        // วาดสไลม์
+        for (GreenSlime slime : greenSlime) {
+            if (slime != null && slime.alive == true) {
+                slime.draw(g2); 
+                // วาดแถบเลือดของสไลม์
+                drawHealthBar(g2, slime.worldX, slime.worldY, slime.life, GameConfig.SLIME_LIFE, Color.RED);
+            }
+        }
 
-    //     tileM.draw(g); // เรียกเมธอด draw ของ TileManager เพื่อวาดแผนที่
-    //     player.draw(g); // เรียกเมธอด draw ของ Player เพื่อวาดตัวละคร
-    //     // ถ้าสไลม์ยังมีชีวิตอยู่ ถึงจะยอมวาดรูปมันลงจอ
-    //     // if (greenSlime.alive == true) {
-    //     //     greenSlime.draw(g); 
-    //     // }
-    //     // วนลูปวาดสไลม์ทั้ง 10 ตัว
-    //     for (int i = 0; i < greenSlime.length; i++) {
-    //         if (greenSlime[i] != null && greenSlime[i].alive == true) {
-    //             greenSlime[i].draw(g); 
-    //         }
-    //     }
-@Override
-protected void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    Graphics2D g2 = (Graphics2D) g.create();
+        // วาดบอส
+        for (int i = 0; i < bosses.length; i++) {
+            if (bosses[i] != null && bosses[i].alive == true) {
+                bosses[i].draw(g2); 
+                // วาดแถบเลือดของบอส
+                drawBossHealthBar(g2, bosses[i].worldX, bosses[i].worldY, bosses[i].life, GameConfig.BOSS_LIFE, Color.ORANGE);
+            }
+        }
+        
+        // วาดตัวละครผู้เล่น
+        player.draw(g2); 
+        
+        drawUI(g2);            // วาด UI (เลือด, EXP, Lv.)
+        drawDamageNumbers(g2); // วาดตัวเลขดาเมจ
+        g2.dispose();          // ทำลาย Graphics2D object หลังจากวาดเสร็จ เพื่อคืนทรัพยากร
+    }
 
-    // --- สิ่งที่ต้องเพิ่ม: อัปเดตจุดกึ่งกลางกล้อง ณ วินาทีที่วาดภาพ ทันที! ---
-    player.screenX = getWidth() / 2 - (tileSize / 2);
-    player.screenY = getHeight() / 2 - (tileSize / 2);
-    // -----------------------------------------------------------
 
-    // คำสั่งวาดภาพด้านล่างนี้ จะใช้ screenX และ screenY ที่ถูกต้องเสมอครับ!
-    tileM.draw(g2);
-    
-    for (GreenSlime slime : greenSlime) {
-        if (slime != null && slime.alive == true) {
-            slime.draw(g2); 
-            // วาดแถบเลือดของสไลม์
-            drawHealthBar(g2, slime.worldX, slime.worldY, slime.life, GameConfig.SLIME_LIFE, Color.RED);
+    // เมธอดสำหรับแสดงตัวเลขดาเมจ
+    public void showDamageNumber(int damage, int worldX, int worldY, Color color) {
+        damageNumbers.add(new DamageNumber(damage, worldX, worldY, color));
+    }
+
+
+    // เมธอดสำหรับวาดดาเมจ
+    private void drawDamageNumbers(Graphics2D g2) {
+        for (DamageNumber damage : damageNumbers) {
+            // คำนวณตำแหน่งบนหน้าจอ
+            int screenX = damage.worldX - player.worldX + player.screenX;
+            int screenY = damage.worldY - player.worldY + player.screenY;
+            
+            // วาดตัวเลขดาเมจ
+            g2.setColor(damage.color);
+            g2.setFont(new Font("Arial", Font.BOLD, 22));
+            
+            String text = String.valueOf(damage.value);
+            g2.drawString(text, screenX, screenY);
         }
     }
 
-    for (int i = 0; i < bosses.length; i++) {
-        if (bosses[i] != null && bosses[i].alive == true) {
-            bosses[i].draw(g2); 
-            // วาดแถบเลือดของบอส (ปรับตำแหน่งให้ตรงกลางตัวบอส 2x2)
-            drawBossHealthBar(g2, bosses[i].worldX, bosses[i].worldY, bosses[i].life, GameConfig.BOSS_LIFE, Color.ORANGE);
-        }
-    }
-    
-    player.draw(g2); 
-    drawUI(g2);
-    drawDamageNumbers(g2); // วาดตัวเลขดาเมจ
-    
-    g2.dispose();
-}
 
-/**
- * แสดงตัวเลขดาเมจ
- */
-public void showDamageNumber(int damage, int worldX, int worldY, Color color) {
-    damageNumbers.add(new DamageNumber(damage, worldX, worldY, color));
-}
-
-/**
- * วาดตัวเลขดาเมจทั้งหมด
- * @param g2 Graphics object
- */
-private void drawDamageNumbers(Graphics2D g2) {
-    for (DamageNumber damage : damageNumbers) {
+    // เมธอดสำหรับวาดแถบเลือด (ใช้สำหรับทั้งสไลม์และบอส)
+    private void drawHealthBar(Graphics2D g2, int worldX, int worldY, int currentLife, int maxLife, Color color) {
         // คำนวณตำแหน่งบนหน้าจอ
-        int screenX = damage.worldX - player.worldX + player.screenX;
-        int screenY = damage.worldY - player.worldY + player.screenY;
+        int screenX = worldX - player.worldX + player.screenX + 32;
+        int screenY = worldY - player.worldY + player.screenY;
         
-        // วาดตัวเลขดาเมจ
-        g2.setColor(damage.color);
-        g2.setFont(new Font("Arial", Font.BOLD, 22));
+        // ขนาดแถบเลือด
+        int barWidth = 40;
+        int barHeight = 6;
+        int barY = screenY - 15; // วาดสูงขึ้นไปอีก
         
-        String text = String.valueOf(damage.value);
-        g2.drawString(text, screenX, screenY);
+        drawHealthBar(g2, screenX, screenY, currentLife, maxLife, color, barWidth, barHeight, barY);
     }
-}
 
-/**
- * วาดแถบเลือด
- */
-private void drawHealthBar(Graphics2D g2, int worldX, int worldY, int currentLife, int maxLife, Color color) {
-    // คำนวณตำแหน่งบนหน้าจอ
-    int screenX = worldX - player.worldX + player.screenX + 32;
-    int screenY = worldY - player.worldY + player.screenY;
-    
-    // ขนาดแถบเลือด
-    int barWidth = 40;
-    int barHeight = 6;
-    int barY = screenY - 15; // วาดสูงขึ้นไปอีก
-    
-    drawHealthBar(g2, screenX, screenY, currentLife, maxLife, color, barWidth, barHeight, barY);
-}
 
-/**
- * วาดแถบเลือดสำหรับบอสขนาด 2x2
- */
-private void drawBossHealthBar(Graphics2D g2, int worldX, int worldY, int currentLife, int maxLife, Color color) {
-    // คำนวณตำแหน่งบนหน้าจอ (ปรับให้ตรงกลางตัวบอส 2x2)
-    int screenX = worldX - player.worldX + player.screenX + tileSize; // ตรงกลางบอส 2x2
-    int screenY = worldY - player.worldY + player.screenY;
-    
-    // ขนาดแถบเลือด (ใหญ่กว่าปกติสำหรับบอส)
-    int barWidth = 60;
-    int barHeight = 8;
-    int barY = screenY - 20; // วาดสูงขึ้นไปอีก
-    
-    drawHealthBar(g2, screenX, screenY, currentLife, maxLife, color, barWidth, barHeight, barY);
-}
+    // เมธอดสำหรับวาดแถบเลือดของบอส (ขยายใหญ่ขึ้นและวาดสูงขึ้น)
+    private void drawBossHealthBar(Graphics2D g2, int worldX, int worldY, int currentLife, int maxLife, Color color) {
+        // คำนวณตำแหน่งบนหน้าจอ (ปรับให้ตรงกลางตัวบอส 2x2)
+        int screenX = worldX - player.worldX + player.screenX + tileSize; // ตรงกลางบอส 2x2
+        int screenY = worldY - player.worldY + player.screenY;
+        
+        // ขนาดแถบเลือด (ใหญ่กว่าปกติสำหรับบอส)
+        int barWidth = 60;
+        int barHeight = 8;
+        int barY = screenY - 20; // วาดสูงขึ้นไปอีก
+        
+        drawHealthBar(g2, screenX, screenY, currentLife, maxLife, color, barWidth, barHeight, barY);
+    }
 
-private void drawHealthBar(Graphics2D g2, int screenX, int screenY, int currentLife, int maxLife, Color color, int barWidth, int barHeight, int barY) {
-    // วาดกรอบแถบเลือด (สีดำ)
-    g2.setColor(Color.BLACK);
-    g2.fillRect(screenX - barWidth/2, barY, barWidth, barHeight);
-    
-    // วาดแถบเลือด (สีตามพารามิเตอร์)
-    int fillWidth = (int)((double)currentLife / maxLife * barWidth);
-    g2.setColor(color);
-    g2.fillRect(screenX - barWidth/2, barY, fillWidth, barHeight);
-    
-    // วาดขอบ (สีขาว)
-    g2.setColor(Color.WHITE);
-    g2.drawRect(screenX - barWidth/2, barY, barWidth, barHeight);
-}
+
+    // เมธอดสำหรับวาดแถบเลือดทั่วไป (รับพารามิเตอร์ทุกอย่างมาเอง)
+    private void drawHealthBar(Graphics2D g2, int screenX, int screenY, int currentLife, int maxLife, Color color, int barWidth, int barHeight, int barY) {
+        // วาดกรอบแถบเลือด (สีดำ)
+        g2.setColor(Color.BLACK);
+        g2.fillRect(screenX - barWidth/2, barY, barWidth, barHeight);
+        
+        // วาดแถบเลือด (สีตามพารามิเตอร์)
+        int fillWidth = (int)((double)currentLife / maxLife * barWidth);
+        g2.setColor(color);
+        g2.fillRect(screenX - barWidth/2, barY, fillWidth, barHeight);
+        
+        // วาดขอบ (สีขาว)
+        g2.setColor(Color.WHITE);
+        g2.drawRect(screenX - barWidth/2, barY, barWidth, barHeight);
+    }
+
 }
