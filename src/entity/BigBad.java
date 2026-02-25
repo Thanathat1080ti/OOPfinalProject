@@ -15,7 +15,7 @@ public class BigBad extends Entity {
     
     public BigBad(GamePanel gp) {
         this.gp = gp;
-        speed = 1;
+        speed = 30;
         direction = "down";
         life = GameConfig.BOSS_LIFE; // บอสเลือดตาม config
 
@@ -40,7 +40,7 @@ public class BigBad extends Entity {
 
     public void setAction() {
         actionLockCounter++;
-        if (actionLockCounter == 120) {
+        if (actionLockCounter == 60) {
             Random random = new Random();
             int i = random.nextInt(100) + 1;
             if (i <= 25) { direction = "up"; }
