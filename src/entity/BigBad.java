@@ -2,6 +2,7 @@ package entity;
 
 import game.GameConfig;
 import game.GamePanel;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -61,7 +62,9 @@ public class BigBad extends Entity {
         
         if (slimeHitbox.intersects(playerHitbox)) {
             gp.player.life -= GameConfig.BOSS_DAMAGE; 
-            System.out.println("Attack By BigBad, Current Your HP: " + gp.player.life);
+            
+            // แสดงตัวเลขดาเมจ
+            gp.showDamageNumber(GameConfig.BOSS_DAMAGE, gp.player.worldX + gp.tileSize/2, gp.player.worldY, Color.ORANGE);
             
             // ให้บอสเด้งถอยหลัง 1 ช่องเวลาชนเรา
             String oppositeDirection = "";

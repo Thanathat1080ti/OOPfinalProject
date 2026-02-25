@@ -203,10 +203,14 @@ public class Player extends Entity {
                     );
 
                     if (swordHitbox.intersects(bossHitbox)) {
-                        gp.bosses[i].life -= 1; 
+                        gp.bosses[i].life -= GameConfig.PLAYER_DAMAGE; 
+                        
+                        // แสดงตัวเลขดาเมจ
+                        gp.showDamageNumber(GameConfig.PLAYER_DAMAGE, gp.bosses[i].worldX, gp.bosses[i].worldY, Color.RED);
                         
                         // ระบบกระเด็นของบอส
                         int knockbackDistance = gp.tileSize; 
+                        
                         String tempDirection = gp.bosses[i].direction;
                         int tempSpeed = gp.bosses[i].speed;
 
