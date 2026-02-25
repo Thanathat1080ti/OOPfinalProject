@@ -2,7 +2,6 @@ package entity;
 
 import game.GameConfig;
 import game.GamePanel;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -24,7 +23,7 @@ public class GreenSlime extends Entity {
         solidArea = new Rectangle(8, 16, 32, 32); // Hitbox ขนาดเดียวกับผู้เล่น
         life = GameConfig.SLIME_LIFE; // สไลม์มี HP ตาม config
 
-        getImage();
+        getImage(); // โหลดรูปภาพของสไลม์
     }
 
     public void getImage() {
@@ -111,7 +110,7 @@ public class GreenSlime extends Entity {
         // ----------------------------------------
 
         
-        // ถ้าไม่ชนกำแพง ก็ให้เดินไปตามทิศทางที่สุ่มได้
+        // ถ้าไม่ชนกำแพง ก็ให้เดินไปตามทิศทางที่สุ่มได้     (การเดินปกติของสไลม์)
         if (!collisionOn) {
             switch (direction) {
                 case "up": worldY -= speed; break;
@@ -122,9 +121,7 @@ public class GreenSlime extends Entity {
         }
     }
 
-    // public void draw(Graphics g) {
-    //     g.drawImage(imageDown, worldX, worldY, gp.tileSize, gp.tileSize, null);
-    // }
+
     public void draw(Graphics g) {
         // คำนวณระยะห่างของสไลม์เทียบกับผู้เล่น
         int screenX = worldX - gp.player.worldX + gp.player.screenX;
