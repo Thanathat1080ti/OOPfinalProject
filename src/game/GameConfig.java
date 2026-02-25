@@ -9,5 +9,14 @@ public final class GameConfig {
 
     public static final int FPS = 60;
 
+    // --- ค่าพลังชีวิตเริ่มต้น ---
+    public static final int PLAYER_MAX_LIFE = 100;
+    public static final int SLIME_LIFE = 50;
+    public static final int BOSS_LIFE = 120;
+
+    // --- ค่าดาเมจพื้นฐาน ---
+    public static final int PLAYER_DAMAGE = 15;
+    public static final int SLIME_DAMAGE = 12;
+    public static final int BOSS_DAMAGE = 25;
 
 }

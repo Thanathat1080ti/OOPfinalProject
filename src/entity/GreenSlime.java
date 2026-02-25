@@ -1,6 +1,9 @@
 package entity;
 
+import game.GameConfig;
 import game.GamePanel;
+
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -8,8 +11,8 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class GreenSlime extends Entity {
-    GamePanel gp;
-    int actionLockCounter = 0; // ตัวนับเวลาสำหรับการเปลี่ยนทิศทางแบบสุ่ม
+    private final GamePanel gp;
+    private int actionLockCounter = 0; // ตัวนับเวลาสำหรับการเปลี่ยนทิศทางแบบสุ่ม
     
     
     public GreenSlime(GamePanel gp) {
@@ -19,7 +22,7 @@ public class GreenSlime extends Entity {
         speed = 1; // สไลม์เดินช้ากว่าผู้เล่น
         direction = "down";
         solidArea = new Rectangle(8, 16, 32, 32); // Hitbox ขนาดเดียวกับผู้เล่น
-        life = 3; // สไลม์มี HP 3 หน่วย
+        life = GameConfig.SLIME_LIFE; // สไลม์มี HP ตาม config
 
         getImage();
     }
@@ -64,7 +67,11 @@ public class GreenSlime extends Entity {
         Rectangle slimeHitbox = new Rectangle(worldX + solidArea.x, worldY + solidArea.y, solidArea.width, solidArea.height);
         Rectangle playerHitbox = new Rectangle(gp.player.worldX + gp.player.solidArea.x, gp.player.worldY + gp.player.solidArea.y, gp.player.solidArea.width, gp.player.solidArea.height);
         if (slimeHitbox.intersects(playerHitbox)) {
-            gp.player.life -= 1; // ลดเลือดผู้เล่น
+            gp.player.life -= GameConfig.SLIME_DAMAGE; // ลดเลือดผู้เล่น
+            
+            // แสดงตัวเลขดาเมจ
+            gp.showDamageNumber(GameConfig.SLIME_DAMAGE, gp.player.worldX, gp.player.worldY, Color.ORANGE);
+            
             System.out.println("ํYou attacked by Slime!!  Your current HP: " + gp.player.life);
             
             // --- อัปเดตระบบสไลม์เด้งถอยหลัง (เช็คกำแพง) ---
@@ -131,7 +138,7 @@ public class GreenSlime extends Entity {
             
             Image image = null;
 
-            // เช็คว่า สไลม์กำลังหันหน้าไปทางไหน ก็เอารูปนั้นมาเตรียมไว้
+            // เช็คว่า AI สไลม์กำลังหันหน้าไปทางไหน ก็เอารูปนั้นมาเตรียมไว้
             switch (direction) {
                 case "up":
                     image = imageUp;
@@ -151,7 +158,4 @@ public class GreenSlime extends Entity {
             g.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
         }
     }
-
-
-
 }

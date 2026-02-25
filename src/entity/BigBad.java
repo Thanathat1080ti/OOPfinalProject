@@ -1,9 +1,10 @@
 package entity;
 
+import game.GameConfig;
 import game.GamePanel;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.util.Random;
 import javax.imageio.ImageIO;
 
@@ -15,7 +16,7 @@ public class BigBad extends Entity {
         this.gp = gp;
         speed = 1;
         direction = "down";
-        life = 15; // บอสเลือด 15 หน่วย
+        life = GameConfig.BOSS_LIFE; // บอสเลือดตาม config
 
         // ขยาย Hitbox ให้ใหญ่ครอบคลุมพื้นที่ 2x2 บล็อก 
         // (ลบขอบออกนิดหน่อยเพื่อให้เดินตามซอกได้ลื่นไหล ไม่ติดมุมง่ายเกินไป)
@@ -59,7 +60,7 @@ public class BigBad extends Entity {
         Rectangle playerHitbox = new Rectangle(gp.player.worldX + gp.player.solidArea.x, gp.player.worldY + gp.player.solidArea.y, gp.player.solidArea.width, gp.player.solidArea.height);
         
         if (slimeHitbox.intersects(playerHitbox)) {
-            gp.player.life -= 1; 
+            gp.player.life -= GameConfig.BOSS_DAMAGE; 
             System.out.println("Attack By BigBad, Current Your HP: " + gp.player.life);
             
             // ให้บอสเด้งถอยหลัง 1 ช่องเวลาชนเรา

@@ -1,7 +1,10 @@
 package entity;
 
+import game.GameConfig;
 import game.GamePanel;
 import input.KeyHandler;
+
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -10,9 +13,9 @@ import javax.imageio.ImageIO;
 
 public class Player extends Entity {
     
-    GamePanel gp;
-    KeyHandler keyH;
-    int attackCooldown = 0; // เพิ่มตัวแปรหน่วงเวลาฟันดาบ
+    private final GamePanel gp;
+    private final KeyHandler keyH;
+    private int attackCooldown = 0; // เพิ่มตัวแปรหน่วงเวลาฟันดาบ
 
     // เพิ่มตัวแปรพิกัดสำหรับวาดบนหน้าจอ
     public int screenX;
@@ -24,9 +27,9 @@ public class Player extends Entity {
     public int exp = 0;
     public int nextLevelExp = 50; // ต้องใช้ 50 EXP ถึงจะเลเวลอัป
 
-    public boolean attacking = false; // ตัวแปรบอกว่ากำลังฟันดาบอยู่ไหม
-    public Image swordUp, swordDown, swordLeft, swordRight; // กระเป๋าเก็บรูปดาบ
-    public Image imageUp, imageDown, imageLeft, imageRight; // ตัวแปรสำหรับเก็บรูปภาพผู้เล่น
+    private boolean attacking = false; // ตัวแปรบอกว่ากำลังฟันดาบอยู่ไหม
+    private Image swordUp, swordDown, swordLeft, swordRight; // กระเป๋าเก็บรูปดาบ
+    private Image imageUp, imageDown, imageLeft, imageRight; // ตัวแปรสำหรับเก็บรูปภาพผู้เล่น
 
     
     public Player(GamePanel gp, KeyHandler keyH) {
@@ -55,7 +58,7 @@ public class Player extends Entity {
         direction = "down"; // ทิศทางเริ่มต้น
 
         // --- กำหนดเลือด ---
-        maxLife = 5;       // เลือดเต็ม 5
+        maxLife = GameConfig.PLAYER_MAX_LIFE;
         life = maxLife;    // ตอนเริ่มเกมให้เลือดเท่ากับเลือดเต็ม
     }
     private void getPlayerImage() {
@@ -76,7 +79,6 @@ public class Player extends Entity {
             e.printStackTrace();
         }
     }
-
 
     public void update() {
         // ใช้ gp.getWidth() และ gp.getHeight() เพื่อดึงขนาดหน้าต่างที่ผู้เล่นกำลังดึงยืดอยู่ตลอดเวลา
@@ -145,7 +147,10 @@ public class Player extends Entity {
                     );
 
                     if (swordHitbox.intersects(slimeHitbox)) {
-                        gp.greenSlime[i].life -= 1; 
+                        gp.greenSlime[i].life -= GameConfig.PLAYER_DAMAGE; 
+                        
+                        // แสดงตัวเลขดาเมจ
+                        gp.showDamageNumber(GameConfig.PLAYER_DAMAGE, gp.greenSlime[i].worldX, gp.greenSlime[i].worldY, Color.RED);
                         
                         // --- อัปเดตระบบกระเด็น (เช็คกำแพง) ---
                         int knockbackDistance = gp.tileSize; 
@@ -186,62 +191,12 @@ public class Player extends Entity {
                     }
                 }
             }
-
-            // --- วนลูปเช็คว่าดาบไปฟันโดนบอส (BigBad) ตัวไหนบ้าง ---
-            for (int i = 0; i < gp.bosses.length; i++) {
-                if (gp.bosses[i] != null && gp.bosses[i].alive == true) {
-                    
-                    Rectangle bossHitbox = new Rectangle(
-                            gp.bosses[i].worldX + gp.bosses[i].solidArea.x, 
-                            gp.bosses[i].worldY + gp.bosses[i].solidArea.y, 
-                            gp.bosses[i].solidArea.width, 
-                            gp.bosses[i].solidArea.height
-                    );
-
-                    if (swordHitbox.intersects(bossHitbox)) {
-                        gp.bosses[i].life -= 1; 
-                        
-                        // ระบบกระเด็นของบอส
-                        int knockbackDistance = gp.tileSize; 
-                        String tempDirection = gp.bosses[i].direction;
-                        int tempSpeed = gp.bosses[i].speed;
-
-                        gp.bosses[i].direction = direction; 
-                        gp.bosses[i].speed = knockbackDistance;
-                        gp.bosses[i].collisionOn = false;
-                        gp.cChecker.checkTile(gp.bosses[i]);
-
-                        if (gp.bosses[i].collisionOn == false) {
-                            switch (direction) {
-                                case "up": gp.bosses[i].worldY -= knockbackDistance; break;
-                                case "down": gp.bosses[i].worldY += knockbackDistance; break;
-                                case "left": gp.bosses[i].worldX -= knockbackDistance; break;
-                                case "right": gp.bosses[i].worldX += knockbackDistance; break;
-                            }
-                        }
-
-                        gp.bosses[i].direction = tempDirection;
-                        gp.bosses[i].speed = tempSpeed;
-                        
-                        if (gp.bosses[i].life <= 0) {
-                            gp.bosses[i].alive = false; 
-                            System.out.println("BigBad defeated!");
-                            gainExp(100); // 🌟 ฆ่าบอสได้ EXP 100 จุกๆ ไปเลย!
-                        }
-                        break; // ฟันโดน 1 ตัวแล้วหยุดเช็คดาบทะลุ
-                    }
-                }
-            }
-
             // ----------------------------------------------------
 
 
             // รีเซ็ตคูลดาวน์ให้รอ 30 เฟรม (ประมาณครึ่งวินาที) ถึงจะฟันครั้งต่อไปได้
             attackCooldown = 30; 
         }
-
-
-
 
         // 1. เช็คว่าผู้เล่นกดปุ่มทิศทางไหนอยู่บ้าง
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
@@ -305,7 +260,6 @@ public class Player extends Entity {
             int swordScreenX = screenX;
             int swordScreenY = screenY;
             Image swordImage = null;
-
             // คำนวณหาพิกัดหน้าจอของดาบ และเลือกรูปดาบตามทิศทาง
             switch (direction) {
                 case "up":
@@ -340,12 +294,9 @@ public class Player extends Entity {
             level++; // เพิ่มเลเวล
             exp = exp - nextLevelExp; // หัก EXP ที่ใช้ไป
             nextLevelExp = nextLevelExp * 2; // เลเวลถัดไปใช้ EXP เยอะขึ้น 2 เท่า
-            maxLife++; // เพิ่มเลือดสูงสุด
+            maxLife += 10; // เพิ่มเลือดสูงสุด
             life = maxLife; // ฮีลเลือดให้เต็ม
             System.out.println("Level Up! Current level is " + level);
         }
     }
-
-
 }
-
