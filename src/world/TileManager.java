@@ -1,11 +1,10 @@
 package world;
 
+import game.GamePanel;
 import java.awt.Graphics;
 import java.io.InputStream;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
-
-import game.GamePanel;
 
 public class TileManager {
     GamePanel gp;
@@ -17,9 +16,8 @@ public class TileManager {
         tile = new Tile[10]; 
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; 
 
-        getTileType();
-        // โหลดแผนที่ด้วย InputStream ที่ถูกต้อง
-        loadMap(getClass().getResourceAsStream("/res/map.txt")); 
+        getTileType();    // โหลดข้อมูลประเภทของ Tile
+        loadMap(getClass().getResourceAsStream("/res/map.txt"));    // โหลดแผนที่จากไฟล์ใน resources
     }
 
     public void getTileType() {
