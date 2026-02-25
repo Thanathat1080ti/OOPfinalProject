@@ -50,6 +50,32 @@ public class GamePanel extends JPanel implements Runnable {
     // Objects ฉาก
     public TileManager tileM = new TileManager(this); // สร้างตัวจัดการแผนที่ โดยส่ง GamePanel (this) ให้
 
+    // สร้าง Object จากคลาส Sound
+    Sound music = new Sound();
+    Sound se = new Sound(); // สำหรับ Sound Effects (เสียงสั้นๆ)
+
+    // สร้าง Method สำหรับสั่งเล่นเพลง BGM (Background Music)
+    public void playMusic(int i) {
+        music.setFile(i, -20.0f);
+        music.play();
+        music.loop();
+    }
+
+    public void stopMusic() {
+        music.stop();
+    }
+
+    // เสียง Effect (เล่นแล้วจบไป)
+    public void playSE(int i) {
+        se.setFile(i, -5.0f);
+        se.play();
+    }
+
+    // เรียกใช้ในตอนเริ่มเกม (เช่นใน Constructor หรือ setupGame)
+    public void setupGame() {
+        playMusic(0); // เล่นเพลงที่ดัชนี 0 (bgm.wav)
+    }
+
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -63,6 +89,8 @@ public class GamePanel extends JPanel implements Runnable {
         // greenSlime.worldX = tileSize * 5; // เกิดที่คอลัมน์ 5
         // greenSlime.worldY = tileSize * 5; // เกิดที่แถว 5
         setupMonsters(); // เรียกเมธอดสำหรับสร้างสไลม์ทั้ง 10 ตัว
+
+        setupGame(); // <--- เพิ่มบรรทัดนี้ เพื่อให้เพลงเริ่มทำงานตอนเปิดเกม
 
     }
 

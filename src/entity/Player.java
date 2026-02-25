@@ -3,7 +3,6 @@ package entity;
 import game.GameConfig;
 import game.GamePanel;
 import input.KeyHandler;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -105,6 +104,9 @@ public class Player extends Entity {
         if (keyH.attackPressed == true && attackCooldown == 0) {
             
             attacking = true; // เปิดสถานะ "กำลังโจมตี" เพื่อเตรียมวาดดาบ
+
+            // 🌟 1. ใส่เสียงเหวี่ยงดาบ (วืด!) 🌟
+        gp.playSE(1);
 
             // 1. สร้าง "กล่องดาบ" ขนาดเท่าตัวละคร และขยับไปด้านหน้าตามทิศทางที่หันอยู่
             Rectangle swordHitbox = new Rectangle(worldX, worldY, gp.tileSize, gp.tileSize);
