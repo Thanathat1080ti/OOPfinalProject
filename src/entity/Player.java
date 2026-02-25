@@ -3,6 +3,7 @@ package entity;
 import game.GameConfig;
 import game.GamePanel;
 import input.KeyHandler;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -146,6 +147,9 @@ public class Player extends Entity {
 
                     if (swordHitbox.intersects(slimeHitbox)) {
                         gp.greenSlime[i].life -= GameConfig.PLAYER_DAMAGE; 
+                        
+                        // แสดงตัวเลขดาเมจ
+                        gp.showDamageNumber(GameConfig.PLAYER_DAMAGE, gp.greenSlime[i].worldX, gp.greenSlime[i].worldY, Color.RED);
                         
                         // --- อัปเดตระบบกระเด็น (เช็คกำแพง) ---
                         int knockbackDistance = gp.tileSize; 

@@ -2,12 +2,14 @@ package game;
 
 import entity.GreenSlime;
 import entity.Player;
+import ui.DamageNumber;
 import input.KeyHandler;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import world.CollisionChecker;
 import world.TileManager;
@@ -41,6 +43,9 @@ public class GamePanel extends JPanel implements Runnable {
     // สร้าง Object ตัวละคร โดยส่ง GamePanel (this) และ KeyHandler
     public Player player = new Player(this, keyH);
     public GreenSlime[] greenSlime = new GreenSlime[10];    // สร้างอาร์เรย์สำหรับเก็บสไลม์ได้สูงสุด 10 ตัว
+
+    // ระบบแสดงตัวเลขดาเมจ
+    private ArrayList<DamageNumber> damageNumbers = new ArrayList<>();
 
     // Objects ฉาก
     public TileManager tileM = new TileManager(this); // สร้างตัวจัดการแผนที่ โดยส่ง GamePanel (this) ให้
@@ -137,7 +142,7 @@ public class GamePanel extends JPanel implements Runnable {
         
         // ชุบชีวิตและรีเซ็ตค่าสถานะให้พร้อมสู้ใหม่
         greenSlime[index].alive = true;
-        greenSlime[index].life = 3; 
+        greenSlime[index].life = GameConfig.SLIME_LIFE; 
         // ----------------------------------------------------
 
         boolean validPosition = false;
@@ -173,6 +178,16 @@ public class GamePanel extends JPanel implements Runnable {
         // --- ถ้ายังมีชีวิตอยู่ (เล่นปกติ) ---
         else {
             player.update(); 
+            
+            // อัพเดตตัวเลขดาเมจ
+            for (int i = damageNumbers.size() - 1; i >= 0; i--) {
+                DamageNumber damage = damageNumbers.get(i);
+                damage.update();
+                
+                if (damage.isExpired()) {
+                    damageNumbers.remove(i);
+                }
+            }
             
             for (int i = 0; i < greenSlime.length; i++) {
                 if (greenSlime[i] != null) {
@@ -256,7 +271,38 @@ public class GamePanel extends JPanel implements Runnable {
         
         player.draw(g2); 
         drawUI(g2);
+        drawDamageNumbers(g2); // วาดตัวเลขดาเมจ
         
         g2.dispose();
+    }
+    
+    /**
+     * แสดงตัวเลขดาเมจ
+     * @param damage ค่าดาเมจ
+     * @param worldX ตำแหน่ง X ในโลก
+     * @param worldY ตำแหน่ง Y ในโลก
+     * @param color สีของตัวเลข
+     */
+    public void showDamageNumber(int damage, int worldX, int worldY, Color color) {
+        damageNumbers.add(new DamageNumber(damage, worldX, worldY, color));
+    }
+    
+    /**
+     * วาดตัวเลขดาเมจทั้งหมด
+     * @param g2 Graphics object
+     */
+    private void drawDamageNumbers(Graphics2D g2) {
+        for (DamageNumber damage : damageNumbers) {
+            // คำนวณตำแหน่งบนหน้าจอ
+            int screenX = damage.worldX - player.worldX + player.screenX;
+            int screenY = damage.worldY - player.worldY + player.screenY;
+            
+            // วาดตัวเลขดาเมจ
+            g2.setColor(damage.color);
+            g2.setFont(new Font("Arial", Font.BOLD, 22));
+            
+            String text = String.valueOf(damage.value);
+            g2.drawString(text, screenX, screenY);
+        }
     }
 }

@@ -2,6 +2,7 @@ package entity;
 
 import game.GameConfig;
 import game.GamePanel;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -66,6 +67,10 @@ public class GreenSlime extends Entity {
         Rectangle playerHitbox = new Rectangle(gp.player.worldX + gp.player.solidArea.x, gp.player.worldY + gp.player.solidArea.y, gp.player.solidArea.width, gp.player.solidArea.height);
         if (slimeHitbox.intersects(playerHitbox)) {
             gp.player.life -= GameConfig.SLIME_DAMAGE; // ลดเลือดผู้เล่น
+            
+            // แสดงตัวเลขดาเมจ
+            gp.showDamageNumber(GameConfig.SLIME_DAMAGE, gp.player.worldX, gp.player.worldY, Color.ORANGE);
+            
             System.out.println("ํYou attacked by Slime!!  Your current HP: " + gp.player.life);
             
             // --- อัปเดตระบบสไลม์เด้งถอยหลัง (เช็คกำแพง) ---
