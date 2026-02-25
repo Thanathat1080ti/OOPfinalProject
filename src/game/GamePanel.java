@@ -2,7 +2,6 @@ package game;
 
 import entity.GreenSlime;
 import entity.Player;
-import ui.DamageNumber;
 import input.KeyHandler;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import javax.swing.JPanel;
+import ui.DamageNumber;
 import world.CollisionChecker;
 import world.TileManager;
 
@@ -255,54 +255,79 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
 
-        // --- 🌟 สิ่งที่ต้องเพิ่ม: อัปเดตจุดกึ่งกลางกล้อง ณ วินาทีที่วาดภาพ ทันที! ---
+        // --- สิ่งที่ต้องเพิ่ม: อัปเดตจุดกึ่งกลางกล้อง ณ วินาทีที่วาดภาพ ทันที! ---
         player.screenX = getWidth() / 2 - (tileSize / 2);
         player.screenY = getHeight() / 2 - (tileSize / 2);
         // -----------------------------------------------------------
 
         // คำสั่งวาดภาพด้านล่างนี้ จะใช้ screenX และ screenY ที่ถูกต้องเสมอครับ!
-        tileM.draw(g2);
-        
-        for (GreenSlime slime : greenSlime) {
-            if (slime != null && slime.alive == true) {
-                slime.draw(g2); 
-            }
-        }
-        
-        player.draw(g2); 
-        drawUI(g2);
-        drawDamageNumbers(g2); // วาดตัวเลขดาเมจ
-        
-        g2.dispose();
-    }
+    tileM.draw(g2);
     
-    /**
-     * แสดงตัวเลขดาเมจ
-     * @param damage ค่าดาเมจ
-     * @param worldX ตำแหน่ง X ในโลก
-     * @param worldY ตำแหน่ง Y ในโลก
-     * @param color สีของตัวเลข
-     */
-    public void showDamageNumber(int damage, int worldX, int worldY, Color color) {
-        damageNumbers.add(new DamageNumber(damage, worldX, worldY, color));
-    }
-    
-    /**
-     * วาดตัวเลขดาเมจทั้งหมด
-     * @param g2 Graphics object
-     */
-    private void drawDamageNumbers(Graphics2D g2) {
-        for (DamageNumber damage : damageNumbers) {
-            // คำนวณตำแหน่งบนหน้าจอ
-            int screenX = damage.worldX - player.worldX + player.screenX;
-            int screenY = damage.worldY - player.worldY + player.screenY;
-            
-            // วาดตัวเลขดาเมจ
-            g2.setColor(damage.color);
-            g2.setFont(new Font("Arial", Font.BOLD, 22));
-            
-            String text = String.valueOf(damage.value);
-            g2.drawString(text, screenX, screenY);
+    for (GreenSlime slime : greenSlime) {
+        if (slime != null && slime.alive == true) {
+            slime.draw(g2); 
+            // วาดแถบเลือดของสไลม์
+            drawHealthBar(g2, slime.worldX, slime.worldY, slime.life, GameConfig.SLIME_LIFE, Color.RED);
         }
     }
+    
+    player.draw(g2); 
+    drawUI(g2);
+    drawDamageNumbers(g2); // วาดตัวเลขดาเมจ
+    
+    g2.dispose();
+}
+
+/**
+ * แสดงตัวเลขดาเมจ
+ */
+public void showDamageNumber(int damage, int worldX, int worldY, Color color) {
+    damageNumbers.add(new DamageNumber(damage, worldX, worldY, color));
+}
+
+/**
+ * วาดตัวเลขดาเมจทั้งหมด
+ * @param g2 Graphics object
+ */
+private void drawDamageNumbers(Graphics2D g2) {
+    for (DamageNumber damage : damageNumbers) {
+        // คำนวณตำแหน่งบนหน้าจอ
+        int screenX = damage.worldX - player.worldX + player.screenX;
+        int screenY = damage.worldY - player.worldY + player.screenY;
+        
+        // วาดตัวเลขดาเมจ
+        g2.setColor(damage.color);
+        g2.setFont(new Font("Arial", Font.BOLD, 22));
+        
+        String text = String.valueOf(damage.value);
+        g2.drawString(text, screenX, screenY);
+    }
+}
+
+/**
+ * วาดแถบเลือด
+ */
+private void drawHealthBar(Graphics2D g2, int worldX, int worldY, int currentLife, int maxLife, Color color) {
+    // คำนวณตำแหน่งบนหน้าจอ
+    int screenX = worldX - player.worldX + player.screenX + 32;
+    int screenY = worldY - player.worldY + player.screenY;
+    
+    // ขนาดแถบเลือด
+    int barWidth = 40;
+    int barHeight = 6;
+    int barY = screenY - 15; // วาดสูงขึ้นไปอีก
+    
+    // วาดกรอบแถบเลือด (สีดำ)
+    g2.setColor(Color.BLACK);
+    g2.fillRect(screenX - barWidth/2, barY, barWidth, barHeight);
+    
+    // วาดแถบเลือด (สีตามพารามิเตอร์)
+    int fillWidth = (int)((double)currentLife / maxLife * barWidth);
+    g2.setColor(color);
+    g2.fillRect(screenX - barWidth/2, barY, fillWidth, barHeight);
+    
+    // วาดขอบ (สีขาว)
+    g2.setColor(Color.WHITE);
+    g2.drawRect(screenX - barWidth/2, barY, barWidth, barHeight);
+}
 }
