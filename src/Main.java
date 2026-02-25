@@ -19,8 +19,6 @@ public class Main {
         gamePanel.requestFocusInWindow(); // ให้ JPanel รับโฟกัสเพื่อรับปุ่มกด
         gamePanel.startGameThread(); // เริ่มลูปเกม
 
-
-
     }
 }
 
