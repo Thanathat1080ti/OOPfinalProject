@@ -1,5 +1,6 @@
 package entity;
 
+import game.GameConfig;
 import game.GamePanel;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -19,7 +20,7 @@ public class GreenSlime extends Entity {
         speed = 1; // สไลม์เดินช้ากว่าผู้เล่น
         direction = "down";
         solidArea = new Rectangle(8, 16, 32, 32); // Hitbox ขนาดเดียวกับผู้เล่น
-        life = 3; // สไลม์มี HP 3 หน่วย
+        life = GameConfig.SLIME_LIFE; // สไลม์มี HP ตาม config
 
         getImage();
     }
@@ -64,7 +65,7 @@ public class GreenSlime extends Entity {
         Rectangle slimeHitbox = new Rectangle(worldX + solidArea.x, worldY + solidArea.y, solidArea.width, solidArea.height);
         Rectangle playerHitbox = new Rectangle(gp.player.worldX + gp.player.solidArea.x, gp.player.worldY + gp.player.solidArea.y, gp.player.solidArea.width, gp.player.solidArea.height);
         if (slimeHitbox.intersects(playerHitbox)) {
-            gp.player.life -= 1; // ลดเลือดผู้เล่น
+            gp.player.life -= GameConfig.SLIME_DAMAGE; // ลดเลือดผู้เล่น
             System.out.println("ํYou attacked by Slime!!  Your current HP: " + gp.player.life);
             
             // --- อัปเดตระบบสไลม์เด้งถอยหลัง (เช็คกำแพง) ---

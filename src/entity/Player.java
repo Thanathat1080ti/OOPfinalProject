@@ -1,5 +1,6 @@
 package entity;
 
+import game.GameConfig;
 import game.GamePanel;
 import input.KeyHandler;
 import java.awt.Graphics;
@@ -55,7 +56,7 @@ public class Player extends Entity {
         direction = "down"; // ทิศทางเริ่มต้น
 
         // --- กำหนดเลือด ---
-        maxLife = 5;       // เลือดเต็ม 5
+        maxLife = GameConfig.PLAYER_MAX_LIFE;
         life = maxLife;    // ตอนเริ่มเกมให้เลือดเท่ากับเลือดเต็ม
     }
     private void getPlayerImage() {
@@ -144,7 +145,7 @@ public class Player extends Entity {
                     );
 
                     if (swordHitbox.intersects(slimeHitbox)) {
-                        gp.greenSlime[i].life -= 1; 
+                        gp.greenSlime[i].life -= GameConfig.PLAYER_DAMAGE; 
                         
                         // --- อัปเดตระบบกระเด็น (เช็คกำแพง) ---
                         int knockbackDistance = gp.tileSize; 
