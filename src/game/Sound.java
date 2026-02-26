@@ -24,19 +24,19 @@ public class Sound {
     }
 
     public void setFile(int i, float volume) { // เพิ่ม float volume เข้ามา
-    try {
-        AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
-        clip = AudioSystem.getClip();
-        clip.open(ais);
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
+            clip = AudioSystem.getClip();
+            clip.open(ais);
 
-        // ปรับเสียงตามค่าที่ส่งมา
-        FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-        gainControl.setValue(volume); 
+            // ปรับเสียงตามค่าที่ส่งมา
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(volume); 
 
-    } catch (Exception e) {
-        // Error handling
+        } catch (Exception e) {
+            // Error handling
+        }
     }
-}
 
     public void play() {
         if (clip != null) {

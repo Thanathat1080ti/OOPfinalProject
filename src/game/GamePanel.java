@@ -115,7 +115,6 @@ public class GamePanel extends JPanel implements Runnable {
         // เรากำหนด FPS = 60 ใน GameConfig
         double drawInterval = 1000000000.0 / GameConfig.FPS;
         
-        // AI Help me
         double delta = 0;
         long lastTime = System.nanoTime();
 
